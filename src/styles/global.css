@@ -1,0 +1,28 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9; 
+    color: #333333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.btn-laranja {
+    color: #ffffff; 
+    background-color: rgb(255, 165, 0); 
+    border-color: rgb(255, 165, 0); 
+}
+
+.btn-laranja:hover {
+    color: #ffffff;
+    background-color: rgb(230, 149, 0); 
+    border-color: rgb(230, 149, 0);
+}
+
+.text-azul {
+    color: rgb(42, 104, 177); 
+}
+
+.bg-azul {
+    background-color: rgb(42, 104, 177);
+}

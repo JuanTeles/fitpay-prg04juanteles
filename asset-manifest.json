@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/fitpay-prg04juanteles/static/css/main.3ae135db.css",
-    "main.js": "/fitpay-prg04juanteles/static/js/main.1e4dccbd.js",
+    "main.js": "/fitpay-prg04juanteles/static/js/main.a2fb7560.js",
     "static/js/453.82c60f58.chunk.js": "/fitpay-prg04juanteles/static/js/453.82c60f58.chunk.js",
     "index.html": "/fitpay-prg04juanteles/index.html",
     "main.3ae135db.css.map": "/fitpay-prg04juanteles/static/css/main.3ae135db.css.map",
-    "main.1e4dccbd.js.map": "/fitpay-prg04juanteles/static/js/main.1e4dccbd.js.map",
+    "main.a2fb7560.js.map": "/fitpay-prg04juanteles/static/js/main.a2fb7560.js.map",
     "453.82c60f58.chunk.js.map": "/fitpay-prg04juanteles/static/js/453.82c60f58.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.3ae135db.css",
-    "static/js/main.1e4dccbd.js"
+    "static/js/main.a2fb7560.js"
   ]
 }

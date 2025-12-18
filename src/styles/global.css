@@ -1,28 +1,56 @@
+:root {
+    --primary-color: #FF5722;       /* Laranja Intenso (Ação, Botões, Destaques) */
+    --primary-hover: #E64A19;       /* Laranja Mais Escuro (Hover) */
+  
+    --secondary-color: #2C3E50;     /* Azul Meia-Noite (Header, Sidebar, Textos Fortes) */
+    --secondary-hover: #1A252F;     
+    
+    --bg-body: #F4F6F8;             /* Cinza muito suave (Fundo da página) */
+    --bg-card: #FFFFFF;             /* Branco (Fundo de tabelas e cards) */
+    
+    --text-main: #2C3E50;           /* Cor padrão do texto */
+    --text-muted: #6C757D;          /* Texto secundário (cinza) */
+    
+    --status-success: #27AE60;      /* Verde (Entradas/Pagos) */
+    --status-danger: #C0392B;       /* Vermelho (Saídas/Atrasados) */
+    --status-warning: #F39C12;      /* Amarelo (Pendente) */
+
+    /* --- Configurações Globais --- */
+    --navbar-height: 70px;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9; 
-    color: #333333;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
 }
 
-.btn-laranja {
-    color: #ffffff; 
-    background-color: rgb(255, 165, 0); 
-    border-color: rgb(255, 165, 0); 
+/* Sobrescrita de Botões do Bootstrap para usar a paleta */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
-.btn-laranja:hover {
-    color: #ffffff;
-    background-color: rgb(230, 149, 0); 
-    border-color: rgb(230, 149, 0);
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
 }
 
-.text-azul {
-    color: rgb(42, 104, 177); 
+.btn-outline-secondary {
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
 }
 
-.bg-azul {
-    background-color: rgb(42, 104, 177);
+.btn-outline-secondary:hover {
+    background-color: var(--secondary-color);
+    color: #fff;
 }
+
+/* Utilitários de Texto */  
+.text-energy { color: var(--primary-color) !important; }
+.text-midnight { color: var(--secondary-color) !important; }

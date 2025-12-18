@@ -1,15 +1,17 @@
 import React from 'react';
+import { Container } from 'react-bootstrap';
 
 const Footer = () => {
-    return (
-        <footer className="bg-light text-dark text-center py-3">
-            <div className="container">
-                <p className="mb-0">
-                    Desenvolvido por: Juan Teles Dias de Souza.
-                </p>
-            </div>
-        </footer>
-    );
+  return (
+    <footer className="mt-auto py-3" style={{ backgroundColor: '#fff', borderTop: '1px solid #e0e0e0' }}>
+      <Container className="text-center text-muted">
+        <small>
+          &copy; {new Date().getFullYear()} <strong>FitPay</strong> - Gestão Inteligente de Academias.
+          <br />
+        </small>
+      </Container>
+    </footer>
+  );
 };
 
 export default Footer;

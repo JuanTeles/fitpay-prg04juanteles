@@ -1,57 +1,40 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { Navbar, Container, Nav, Button } from 'react-bootstrap';
+import '../styles/global.css'; 
 
 const Header = () => {
-    return (
-        <header>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <div className="container-fluid">
-                    {/* Link principal (marca) */}
-                    <NavLink className="navbar-brand text-azul" to="/">
-                        FitPay
-                    </NavLink>
+  return (
+    <Navbar expand="lg" variant="dark" style={{ backgroundColor: 'var(--secondary-color)', height: 'var(--navbar-height)' }}>
+      <Container>
+        {/* LOGO: Texto forte + Ponto laranja */}
+        <Navbar.Brand href="/" className="fw-bold fs-3">
+          Fit<span style={{ color: 'var(--primary-color)' }}>Pay</span>
+        </Navbar.Brand>
 
-                    <button
-                        className="navbar-toggler"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#navbarNav"
-                        aria-controls="navbarNav"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation"
-                    >
-                        <span className="navbar-toggler-icon"></span>
-                    </button>
-                    
-                    <div className="collapse navbar-collapse" id="navbarNav">
-                        <ul className="navbar-nav ms-auto">
-                            <li className="nav-item">
-                                {/* O 'end' garante que 'Inicio' só fique ativo na rota exata '/' */}
-                                <NavLink to="/" end className="nav-link">
-                                    Inicio
-                                </NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink to="/fluxo" className="nav-link">
-                                    Fluxo
-                                </NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink to="/mensalidades" className="nav-link">
-                                    Mensalidades
-                                </NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink to="/about" className="nav-link">
-                                    Sobre
-                                </NavLink>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </header>
-    );
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link href="/" className="text-light">Dashboard</Nav.Link>
+            <Nav.Link href="/planos" className="text-light opacity-75 hover-opacity-100">Planos</Nav.Link>
+            <Nav.Link href="/alunos" className="text-light opacity-75">Alunos</Nav.Link>
+            <Nav.Link href="/financeiro" className="text-light opacity-75">Financeiro</Nav.Link>
+          </Nav>
+          
+          <Nav>
+            <Navbar.Text className="text-white me-3">
+              Olá, <strong>Admin</strong>
+            </Navbar.Text>
+            { /*
+            <Button variant="light" size="sm" className="text-dark fw-bold">
+              Sair
+            </Button>
+            */}
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  );
 };
 
 export default Header;

@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 // Importação do bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 // Importação do CSS Customizado
 import './styles/global.css'; 

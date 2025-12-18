@@ -19,7 +19,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
      <React.StrictMode>
         {/* Define a base do roteamento como o nome do repositório para funcionar no GitHub Pages. */}
-        <BrowserRouter basename="/fitpay-prg04juanteles"> 
+        <BrowserRouter> 
           <App />
         </BrowserRouter>
     </React.StrictMode>

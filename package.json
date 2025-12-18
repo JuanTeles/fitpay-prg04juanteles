@@ -1,7 +1,6 @@
 {
   "name": "fitpay-prg04juanteles",
   "version": "0.1.0",
-  "homepage": "https://juanteles.github.io/fitpay-prg04juanteles",
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^10.4.1",

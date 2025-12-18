@@ -54,3 +54,9 @@ body {
 /* Utilitários de Texto */  
 .text-energy { color: var(--primary-color) !important; }
 .text-midnight { color: var(--secondary-color) !important; }
+
+.nav-link.active {
+  font-weight: 600;
+  color: var(--primary-color) !important;
+  border-bottom: 1px var(--primary-color);
+}

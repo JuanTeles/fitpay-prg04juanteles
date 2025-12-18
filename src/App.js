@@ -10,10 +10,10 @@ import Footer from './components/Footer';
 
 import Dashboard from './pages/Dashboard';
 import About from './pages/About'; 
-import Cadastro from './pages/Cadastro'; 
-import Login from './pages/Login'; 
 import PlanoList from './pages/planos/PlanoList';
 import PlanoForm from './pages/planos/PlanoForm';
+import EnderecoList from './pages/enderecos/EnderecoList';
+import EnderecoForm from './pages/enderecos/EnderecoForm';
 
 const App = () => {
     return (
@@ -30,16 +30,15 @@ const App = () => {
                     {/* 2. Rota para a Página Sobre */}
                     <Route path="/about" element={<About />} />
 
-                    {/* 3. Rota para a Página de Cadastro */}
-                    <Route path="/cadastro" element={<Cadastro />} />
-                    
-                    {/* 4. Rota para a Página de Cadastro */}
-                    <Route path="/login" element={<Login />} />
-
                     {/* Rotas de Planos (Sprint 1) */}
                     <Route path="/planos" element={<PlanoList />} />
                     <Route path="/planos/novo" element={<PlanoForm />} />
                     <Route path="/planos/editar/:id" element={<PlanoForm />} />
+
+                    {/* Rotas de Endereços (Sprint 1) */}
+                    <Route path="/enderecos" element={<EnderecoList />} />
+                    <Route path="/enderecos/novo" element={<EnderecoForm />} />
+                    <Route path="/enderecos/editar/:id" element={<EnderecoForm />} />
                 </Routes>
             </main>
 

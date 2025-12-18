@@ -55,6 +55,7 @@ body {
 .text-energy { color: var(--primary-color) !important; }
 .text-midnight { color: var(--secondary-color) !important; }
 
+/* Indica a página que está ativa no momento */
 .nav-link.active {
   font-weight: 600;
   color: var(--primary-color) !important;

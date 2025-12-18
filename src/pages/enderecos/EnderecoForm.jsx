@@ -1,0 +1,158 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+import { Container, Form, Button, Row, Col, Alert, Spinner } from 'react-bootstrap';
+import EnderecoService from '../../services/EnderecoService';
+import EnderecoCampos from '../../components/EnderecoCampos';
+import axios from 'axios'; 
+
+const EnderecoForm = () => {
+  const { id } = useParams(); // Pega o ID da rota (se houver)
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    cep: '',
+    logradouro: '',
+    numero: '',
+    complemento: '',
+    bairro: '',
+    cidade: '',
+    uf: ''
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [cepLoading, setCepLoading] = useState(false);
+
+  // Se tiver ID, carrega os dados para edição
+  useEffect(() => {
+    if (id) {
+      loadEndereco(id);
+    }
+  }, [id]);
+
+  const loadEndereco = async (enderecoId) => {
+    try {
+      setLoading(true);
+      const data = await EnderecoService.findById(enderecoId); 
+      setFormData(data);
+    } catch (err) {
+      setError('Erro ao carregar os dados do endereço.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Busca automática de CEP (ViaCEP)
+  const handleCepBlur = async (e) => {
+    const cep = e.target.value.replace(/\D/g, ''); // Remove não numéricos
+
+    if (cep.length === 8) {
+      setCepLoading(true);
+      try {
+        const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+        if (!response.data.erro) {
+          setFormData((prev) => ({
+            ...prev,
+            logradouro: response.data.logradouro,
+            bairro: response.data.bairro,
+            cidade: response.data.localidade,
+            uf: response.data.uf,
+            cep: cep // Mantém o CEP limpo ou formatado
+          }));
+          setError(null);
+        } else {
+          setError('CEP não encontrado.');
+        }
+      } catch (err) {
+        console.error('Erro ao buscar CEP:', err);
+        setError('Erro ao consultar ViaCEP.');
+      } finally {
+        setCepLoading(false);
+      }
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    try {
+      // Limpeza básica do payload
+      const payload = {
+        ...formData,
+        cep: formData.cep.replace(/\D/g, '') // Envia apenas números para a API
+      };
+
+      if (id) {
+        await EnderecoService.update({ ...payload, id }); // Adiciona ID para o PUT
+        alert('Endereço atualizado com sucesso!');
+      } else {
+        await EnderecoService.save(payload);
+        alert('Endereço cadastrado com sucesso!');
+      }
+      navigate('/enderecos'); // Volta para a lista
+    } catch (err) {
+      console.error(err);
+      // Tenta pegar a mensagem de erro do backend (ex: BusinessException)
+      const msg = err.response?.data?.message || 'Ocorreu um erro ao salvar.';
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading && id) {
+    return (
+      <Container className="text-center mt-5">
+        <Spinner animation="border" />
+        <p>Carregando dados...</p>
+      </Container>
+    );
+  }
+
+  return (
+    <Container className="py-5">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2 className="fw-bold text-midnight">
+          {id ? 'Editar Endereço' : 'Novo Endereço'}
+        </h2>
+      </div>
+
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      <div className="card shadow-sm border-0">
+        <div className="card-body p-4">
+          <Form onSubmit={handleSubmit}>
+            
+            <EnderecoCampos 
+              formData={formData} 
+              setFormData={setFormData} 
+              error={error}
+              setError={setError}
+            />
+
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+              <Link to="/enderecos" className="btn btn-light me-2">Cancelar</Link>
+              <Button variant="primary" type="submit" disabled={loading || cepLoading}>
+                {loading ? 'Salvando...' : 'Salvar Endereço'}
+              </Button>
+            </div>
+
+          </Form>
+        </div>
+      </div>
+    </Container>
+  );
+};
+
+export default EnderecoForm;

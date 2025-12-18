@@ -69,10 +69,12 @@ const Dashboard = () => {
 
       {/* --- Seção de Acesso Rápido --- */}
       <h4 className="fw-bold text-midnight mb-3 mt-5">Gerenciamento Rápido</h4>
-      <Row className="g-4">
+      
+      {/* 'justify-content-center' para centralizar os itens da segunda linha */}
+      <Row className="g-4 justify-content-center">
         
         {/* Botão: Planos */}
-        <Col md={3} sm={6}>
+        <Col md={4} sm={6}>
           <Card className="h-100 shadow-sm border-0 text-center hover-card">
             <Card.Body className="d-flex flex-column align-items-center justify-content-center py-4">
               <i className="bi bi-card-checklist fs-1 text-energy mb-3"></i>
@@ -85,8 +87,22 @@ const Dashboard = () => {
           </Card>
         </Col>
 
+        {/* Botão: Endereços */}
+        <Col md={4} sm={6}>
+          <Card className="h-100 shadow-sm border-0 text-center hover-card">
+            <Card.Body className="d-flex flex-column align-items-center justify-content-center py-4">
+              <i className="bi bi-geo-alt-fill fs-1 text-info mb-3"></i>
+              <Card.Title>Endereços</Card.Title>
+              <Card.Text className="text-muted small">Gerencie endereços.</Card.Text>
+              <Link to="/enderecos">
+                <Button variant="outline-secondary" size="sm" className="mt-2">Acessar</Button>
+              </Link>
+            </Card.Body>
+          </Card>
+        </Col>
+
         {/* Botão: Alunos */}
-        <Col md={3} sm={6}>
+        <Col md={4} sm={6}>
           <Card className="h-100 shadow-sm border-0 text-center hover-card">
             <Card.Body className="d-flex flex-column align-items-center justify-content-center py-4">
               <i className="bi bi-person-badge fs-1 text-primary mb-3"></i> 
@@ -100,7 +116,7 @@ const Dashboard = () => {
         </Col>
 
         {/* Botão: Financeiro (Pagamentos) */}
-        <Col md={3} sm={6}>
+        <Col md={4} sm={6}>
           <Card className="h-100 shadow-sm border-0 text-center hover-card">
             <Card.Body className="d-flex flex-column align-items-center justify-content-center py-4">
               <i className="bi bi-wallet2 fs-1 text-success mb-3"></i>
@@ -114,7 +130,7 @@ const Dashboard = () => {
         </Col>
 
         {/* Botão: Movimentações */}
-        <Col md={3} sm={6}>
+        <Col md={4} sm={6}>
           <Card className="h-100 shadow-sm border-0 text-center hover-card">
             <Card.Body className="d-flex flex-column align-items-center justify-content-center py-4">
               <i className="bi bi-graph-up-arrow fs-1 text-midnight mb-3"></i>

@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Table, Button, Card, Spinner, Alert, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import ModalConfirmacao from '../../components/ModalConfirmacao';
 import PlanoService from '../../services/PlanoService';
 
 const PlanoList = () => {
     const [planos, setPlanos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Estados para o Modal de Exclusão
+    const [showModal, setShowModal] = useState(false);
+    const [planoToDelete, setPlanoToDelete] = useState(null);
 
     // Busca os dados assim que a tela carrega
     useEffect(() => {
@@ -29,15 +34,20 @@ const PlanoList = () => {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (window.confirm('Tem certeza que deseja excluir este plano?')) {
-            try {
-                await PlanoService.delete(id);
-                // Atualiza a lista removendo o item excluído visualmente
-                setPlanos(planos.filter(p => p.id !== id));
-            } catch (err) {
-                alert('Erro ao excluir o plano.');
-            }
+    const handleAbrirConfirmacao = (id) => {
+        setPlanoToDelete(id);
+        setShowModal(true);
+    };
+
+    const confirmarExclusao = async () => {
+        try {
+            await PlanoService.delete(planoToDelete);
+            setPlanos(planos.filter(p => p.id !== planoToDelete));
+            setShowModal(false); // Fecha o modal
+            setPlanoToDelete(null); // Limpa o ID
+        } catch (err) {
+            alert('Erro ao excluir o plano.');
+            setShowModal(false);
         }
     };
 
@@ -114,7 +124,7 @@ const PlanoList = () => {
                                             variant="link" 
                                             className="text-danger p-0" 
                                             title="Excluir"
-                                            onClick={() => handleDelete(plano.id)}
+                                            onClick={() => handleAbrirConfirmacao(plano.id)} // Nova função aqui
                                         >
                                             <i className="bi bi-trash fs-5"></i>
                                         </Button>
@@ -126,6 +136,14 @@ const PlanoList = () => {
                     </Table>
                 </Card.Body>
             </Card>
+
+            <ModalConfirmacao
+                show={showModal}
+                onHide={() => setShowModal(false)}
+                onConfirm={confirmarExclusao}
+                titulo="Confirmar Exclusão"
+                mensagem="Tem certeza que deseja excluir este plano? Esta ação não poderá ser desfeita."
+            />
         </Container>
     );
 };

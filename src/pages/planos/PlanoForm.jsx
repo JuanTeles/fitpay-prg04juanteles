@@ -17,7 +17,6 @@ const PlanoForm = () => {
 
     const [error, setError] = useState(null);
     const [saving, setSaving] = useState(false);
-    const [loadingData, setLoadingData] = useState(false);
 
     // Se tiver ID na URL, busca os dados do plano para editar
     useEffect(() => {
@@ -28,7 +27,6 @@ const PlanoForm = () => {
 
     const carregarPlano = async (planoId) => {
     try {
-        setLoadingData(true);
         const dados = await PlanoService.findById(planoId);
         
         // Preenche o formulário com os dados que viram da API
@@ -42,9 +40,7 @@ const PlanoForm = () => {
     } catch (err) {
         setError('Erro ao carregar dados para edição.');
         console.error(err);
-    } finally {
-          setLoadingData(false);
-    }
+    } 
   };
 
     // Envia os dados para o Backend

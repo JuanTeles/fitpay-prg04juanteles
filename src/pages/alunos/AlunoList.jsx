@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Table, Button, Card, Spinner, Alert, Form } from 'react-bootstrap'; // Removido InputGroup
+import { Container, Table, Button, Card, Spinner, Alert, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import ModalConfirmacao from '../../components/ModalConfirmacao';
 import AlunoService from '../../services/AlunoService';
@@ -15,7 +15,7 @@ const AlunoList = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             carregarAlunos(searchTerm);
-        }, 500); 
+        }, 500);
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
@@ -51,18 +51,26 @@ const AlunoList = () => {
     return (
         <Container className="py-5">
             <div className="d-flex justify-content-between align-items-center mb-4">
+                
+                {/* LADO ESQUERDO: Títulos */}
                 <div>
                     <h2 className="fw-bold text-midnight">Alunos</h2>
                     <p className="text-muted mb-0">Gestão de alunos</p>
                 </div>
+
+                {/* LADO DIREITO: Busca + Botão (Alinhados na horizontal) */}
                 <div className="d-flex gap-2 align-items-center">
+                    
+                    {/* CAMPO DE BUSCA */}
                     <Form.Control
                         type="text"
                         placeholder="Pesquisar por nome ou CPF..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        style={{ width: '280px' }}
+                        style={{ width: '280px' }} // Largura fixa para não quebrar layout
                     />
+
+                    {/* BOTÃO NOVO ALUNO */}
                     <Link to="/alunos/novo">
                         <Button variant="primary" className="fw-bold text-nowrap shadow-sm">
                             <i className="bi bi-plus-lg me-1"></i>
@@ -72,8 +80,10 @@ const AlunoList = () => {
                 </div>
             </div>
 
+            {/* ALERTA DE ERRO */}
             {error && <Alert variant="danger">{error}</Alert>}
 
+            {/* TABELA */}
             {loading ? (
                 <div className="text-center py-5">
                     <Spinner animation="border" variant="primary" />

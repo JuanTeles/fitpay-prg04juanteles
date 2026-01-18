@@ -5,11 +5,13 @@ const BASE_URL = '/enderecos';
 const EnderecoService = {
 
   // Consome: GET /enderecos/findall
-  findAll: async (page = 0, size = 10) => {
+  findAll: async (page = 0, size = 10, search = '') => {
     try {
-      const response = await api.get(`${BASE_URL}/findall`, {
-        params: { page, size }
-      });
+      const params = { page, size };
+      if (search) {
+        params.search = search;
+      }
+      const response = await api.get(`${BASE_URL}/findall`, { params });
       return response.data; 
     } catch (error) {
       console.error("Erro ao buscar endereços:", error);

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { Container, Form, Button, Row, Col, Alert, Spinner } from 'react-bootstrap';
+import { Container, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import EnderecoService from '../../services/EnderecoService';
 import EnderecoCampos from '../../components/EnderecoCampos';
-import axios from 'axios'; 
 
 const EnderecoForm = () => {
   const { id } = useParams(); // Pega o ID da rota (se houver)
@@ -21,7 +20,6 @@ const EnderecoForm = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [cepLoading, setCepLoading] = useState(false);
 
   // Se tiver ID, carrega os dados para edição
   useEffect(() => {
@@ -40,44 +38,6 @@ const EnderecoForm = () => {
       console.error(err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  // Busca automática de CEP (ViaCEP)
-  const handleCepBlur = async (e) => {
-    const cep = e.target.value.replace(/\D/g, ''); // Remove não numéricos
-
-    if (cep.length === 8) {
-      setCepLoading(true);
-      try {
-        const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
-        if (!response.data.erro) {
-          setFormData((prev) => ({
-            ...prev,
-            logradouro: response.data.logradouro,
-            bairro: response.data.bairro,
-            cidade: response.data.localidade,
-            uf: response.data.uf,
-            cep: cep // Mantém o CEP limpo ou formatado
-          }));
-          setError(null);
-        } else {
-          setError('CEP não encontrado.');
-        }
-      } catch (err) {
-        console.error('Erro ao buscar CEP:', err);
-        setError('Erro ao consultar ViaCEP.');
-      } finally {
-        setCepLoading(false);
-      }
     }
   };
 
@@ -143,7 +103,7 @@ const EnderecoForm = () => {
 
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <Link to="/enderecos" className="btn btn-light me-2">Cancelar</Link>
-              <Button variant="primary" type="submit" disabled={loading || cepLoading}>
+              <Button variant="primary" type="submit" disabled={loading}>
                 {loading ? 'Salvando...' : 'Salvar Endereço'}
               </Button>
             </div>

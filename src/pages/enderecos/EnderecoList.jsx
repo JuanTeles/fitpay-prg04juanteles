@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Table, Button, Spinner, Alert, Modal } from 'react-bootstrap';
+import { Container, Table, Button, Spinner, Alert } from 'react-bootstrap';
 import ModalConfirmacao from '../../components/ModalConfirmacao';
 import EnderecoService from '../../services/EnderecoService';
 

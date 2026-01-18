@@ -15,6 +15,7 @@ import PlanoForm from './pages/planos/PlanoForm';
 import EnderecoList from './pages/enderecos/EnderecoList';
 import EnderecoForm from './pages/enderecos/EnderecoForm';
 import AlunoList from './pages/alunos/AlunoList';
+import AlunoForm from './pages/alunos/AlunoForm';
 
 const App = () => {
     return (
@@ -43,6 +44,8 @@ const App = () => {
 
                     {/* Rotas de Alunos (Sprint 2) */}
                     <Route path="/alunos" element={<AlunoList />} />
+                    <Route path="/alunos/novo" element={<AlunoForm />} />
+                    <Route path="/alunos/editar/:id" element={<AlunoForm />} />
                 </Routes>
             </main>
 

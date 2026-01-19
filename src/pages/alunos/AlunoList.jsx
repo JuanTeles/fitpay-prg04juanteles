@@ -1,8 +1,8 @@
-//
 import React, { useEffect, useState } from 'react';
 import { Container, Table, Button, Card, Spinner, Alert, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import ModalConfirmacao from '../../components/ModalConfirmacao';
+import MatriculaModal from '../../components/MatriculaModal'; 
 import AlunoService from '../../services/AlunoService';
 
 const AlunoList = () => {
@@ -12,6 +12,10 @@ const AlunoList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [alunoToDelete, setAlunoToDelete] = useState(null);
+
+    // Estados para Matrícula 
+    const [showModalMatricula, setShowModalMatricula] = useState(false);
+    const [alunoParaMatricula, setAlunoParaMatricula] = useState(null);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -47,6 +51,12 @@ const AlunoList = () => {
             alert('Erro ao excluir aluno.');
             setShowModal(false);
         }
+    };
+
+    // Função para abrir o Modal de Matrícula
+    const handleAbrirMatricula = (aluno) => {
+        setAlunoParaMatricula(aluno);
+        setShowModalMatricula(true);
     };
 
     return (
@@ -99,6 +109,7 @@ const AlunoList = () => {
                                     <th>CPF</th>
                                     <th>Email</th>
                                     <th>Telefone</th>
+                                    <th>Realizar Matricula</th>
                                     <th className="text-end pe-4">Ações</th>
                                 </tr>
                             </thead>
@@ -113,10 +124,35 @@ const AlunoList = () => {
                                 ) : (
                                     alunos.map((aluno) => (
                                         <tr key={aluno.id}>
-                                            <td className="ps-4 fw-bold">{aluno.nome}</td>
+                                            <td className="ps-4 fw-bold">
+                                                {aluno.nome}
+                                                {/* Badge de Status (Visualização) */}
+                                                {/* Verifica se a propriedade 'ativo' retornada pelo backend é true */}
+                                                {aluno.ativo ? (
+                                                    <span className="badge bg-success ms-2" style={{ fontSize: '0.7em', verticalAlign: 'middle' }}>
+                                                        ATIVO
+                                                    </span>
+                                                ) : (
+                                                    <span className="badge bg-secondary ms-2" style={{ fontSize: '0.7em', verticalAlign: 'middle' }}>
+                                                        INATIVO
+                                                    </span>
+                                                )}
+                                            </td>
                                             <td>{aluno.cpf}</td>
                                             <td>{aluno.email}</td>
                                             <td>{aluno.telefone || '-'}</td>
+                                            <td>
+                                                {/* Botão de Matrícula */}
+                                                <Button 
+                                                    variant="link" 
+                                                    className="p-0 me-3 text-success"
+                                                    title="Realizar Matrícula"
+                                                    onClick={() => handleAbrirMatricula(aluno)}
+                                                >
+                                                    <i className="bi bi-card-checklist fs-5"></i>
+                                                </Button>
+                                                Matricular
+                                            </td>
                                             <td className="text-end pe-4">
                                                 <Link to={`/alunos/editar/${aluno.id}`} className="me-3">
                                                     <i className="bi bi-pencil-square fs-5 text-primary"></i>
@@ -143,6 +179,13 @@ const AlunoList = () => {
                 onConfirm={confirmarExclusao}
                 titulo="Confirmar Exclusão"
                 mensagem="Deseja realmente excluir este aluno?"
+            />
+
+            {/* Modal de Matrícula */}
+            <MatriculaModal 
+                show={showModalMatricula}
+                handleClose={() => setShowModalMatricula(false)}
+                aluno={alunoParaMatricula}
             />
         </Container>
     );

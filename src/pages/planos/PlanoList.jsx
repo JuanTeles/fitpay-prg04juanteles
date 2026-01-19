@@ -51,16 +51,6 @@ const PlanoList = () => {
         }
     };
 
-    // Renderização Condicional: Carregando
-    if (loading) {
-        return (
-            <Container className="text-center py-5">
-                <Spinner animation="border" variant="primary" />
-                <p className="mt-2 text-muted">Buscando dados no sistema...</p>
-            </Container>
-        );
-    }
-
     return (
         <Container className="py-5">
         
@@ -80,62 +70,70 @@ const PlanoList = () => {
             {/* Alerta de Erro (se houver) */}
             {error && <Alert variant="danger">{error}</Alert>}
 
-            {/* Tabela de Dados */}
-            <Card className="shadow-sm border-0">
-                <Card.Body className="p-0">
-                    <Table hover responsive className="mb-0 align-middle">
-                        <thead className="bg-light text-secondary">
-                            <tr>
-                                <th className="ps-4">Nome</th>
-                                <th>Valor</th>
-                                <th>Duração</th>
-                                <th>Descrição</th>
-                                <th className="text-end pe-4">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {planos.length === 0 ? (
+            {/* Renderização Condicional: Carregando (Padronizado com Alunos/Endereços) */}
+            {loading ? (
+                <div className="text-center py-5">
+                    <Spinner animation="border" variant="primary" />
+                    <p className="mt-2 text-muted">Buscando dados no sistema...</p>
+                </div>
+            ) : (
+                /* Tabela de Dados */
+                <Card className="shadow-sm border-0">
+                    <Card.Body className="p-0">
+                        <Table hover responsive className="mb-0 align-middle">
+                            <thead className="bg-light text-secondary">
                                 <tr>
-                                <td colSpan="5" className="text-center py-5 text-muted">
-                                    <i className="bi bi-inbox fs-1 d-block mb-2"></i>
-                                    Nenhum plano cadastrado ainda.
-                                </td>
+                                    <th className="ps-4">Nome</th>
+                                    <th>Valor</th>
+                                    <th>Duração</th>
+                                    <th>Descrição</th>
+                                    <th className="text-end pe-4">Ações</th>
                                 </tr>
-                            ) : (
-                            planos.map((plano) => (
-                                <tr key={plano.id}>
-                                    <td className="ps-4 fw-bold text-midnight">{plano.nome}</td>
-                                    <td className="text-success fw-bold">
-                                        {plano.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            </thead>
+                            <tbody>
+                                {planos.length === 0 ? (
+                                    <tr>
+                                    <td colSpan="5" className="text-center py-5 text-muted">
+                                        <i className="bi bi-inbox fs-1 d-block mb-2"></i>
+                                        Nenhum plano cadastrado ainda.
                                     </td>
-                                    <td>
-                                        <Badge bg="light" text="dark" className="border">
-                                            {plano.duracao_dias} dia(s)
-                                        </Badge>
-                                    </td>
-                                    <td className="text-muted small">{plano.descricao || '-'}</td>
-                                    <td className="text-end pe-4">
-                                        <Link to={`/planos/editar/${plano.id}`}>
-                                            <Button variant="link" className="text-primary p-0 me-3" title="Editar">
-                                                <i className="bi bi-pencil-square fs-5"></i>
+                                    </tr>
+                                ) : (
+                                planos.map((plano) => (
+                                    <tr key={plano.id}>
+                                        <td className="ps-4 fw-bold text-midnight">{plano.nome}</td>
+                                        <td className="text-success fw-bold">
+                                            {plano.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                        </td>
+                                        <td>
+                                            <Badge bg="light" text="dark" className="border">
+                                                {plano.duracao_dias} dia(s)
+                                            </Badge>
+                                        </td>
+                                        <td className="text-muted small">{plano.descricao || '-'}</td>
+                                        <td className="text-end pe-4">
+                                            <Link to={`/planos/editar/${plano.id}`}>
+                                                <Button variant="link" className="text-primary p-0 me-3" title="Editar">
+                                                    <i className="bi bi-pencil-square fs-5"></i>
+                                                </Button>
+                                            </Link>
+                                            <Button 
+                                                variant="link" 
+                                                className="text-danger p-0" 
+                                                title="Excluir"
+                                                onClick={() => handleAbrirConfirmacao(plano.id)} // Nova função aqui
+                                            >
+                                                <i className="bi bi-trash fs-5"></i>
                                             </Button>
-                                        </Link>
-                                        <Button 
-                                            variant="link" 
-                                            className="text-danger p-0" 
-                                            title="Excluir"
-                                            onClick={() => handleAbrirConfirmacao(plano.id)} // Nova função aqui
-                                        >
-                                            <i className="bi bi-trash fs-5"></i>
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                        </tbody>
-                    </Table>
-                </Card.Body>
-            </Card>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                            </tbody>
+                        </Table>
+                    </Card.Body>
+                </Card>
+            )}
 
             <ModalConfirmacao
                 show={showModal}

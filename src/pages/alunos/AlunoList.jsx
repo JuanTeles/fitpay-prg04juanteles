@@ -10,6 +10,10 @@ const AlunoList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    
+    // Filtro de Status
+    const [statusFilter, setStatusFilter] = useState(''); 
+
     const [showModal, setShowModal] = useState(false);
     const [alunoToDelete, setAlunoToDelete] = useState(null);
 
@@ -19,15 +23,16 @@ const AlunoList = () => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            carregarAlunos(searchTerm);
+            carregarAlunos(searchTerm, statusFilter);
         }, 500);
         return () => clearTimeout(timer);
-    }, [searchTerm]);
+    }, [searchTerm, statusFilter]); 
 
-    const carregarAlunos = async (termo = '') => {
+    const carregarAlunos = async (termo = '', status = '') => {
         try {
             setLoading(true);
-            const dados = await AlunoService.findAll(0, 10, termo); 
+            // Chama o service enviando paginação, termo de busca E status
+            const dados = await AlunoService.findAll(0, 10, termo, status); 
             setAlunos(dados.content || []);
             setError(null);
         } catch (err) {
@@ -69,16 +74,28 @@ const AlunoList = () => {
                     <p className="text-muted mb-0">Gestão de alunos</p>
                 </div>
 
-                {/* LADO DIREITO: Busca + Botão (Alinhados na horizontal) */}
+                {/* LADO DIREITO: Filtros + Botão (Alinhados na horizontal) */}
                 <div className="d-flex gap-2 align-items-center">
                     
+                    {/* FILTRO */}
+                    <Form.Select 
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        style={{ width: '150px' }}
+                        className="shadow-sm"
+                    >
+                        <option value="">Todos</option>
+                        <option value="ATIVO">Ativos</option>
+                        <option value="INATIVO">Inativos</option>
+                    </Form.Select>
+
                     {/* CAMPO DE BUSCA */}
                     <Form.Control
                         type="text"
                         placeholder="Pesquisar por nome ou CPF..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        style={{ width: '280px' }} // Largura fixa para não quebrar layout
+                        style={{ width: '280px' }} 
                     />
 
                     {/* BOTÃO NOVO ALUNO */}
@@ -116,9 +133,9 @@ const AlunoList = () => {
                             <tbody>
                                 {alunos.length === 0 ? (
                                     <tr>
-                                        <td colSpan="5" className="text-center py-5 text-muted">
+                                        <td colSpan="6" className="text-center py-5 text-muted">
                                             <i className="bi bi-people fs-1 d-block mb-2"></i>
-                                            {searchTerm ? 'Nenhum resultado encontrado.' : 'Nenhum aluno cadastrado.'}
+                                            {searchTerm || statusFilter ? 'Nenhum resultado encontrado.' : 'Nenhum aluno cadastrado.'}
                                         </td>
                                     </tr>
                                 ) : (

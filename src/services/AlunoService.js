@@ -5,13 +5,19 @@ const BASE_URL = '/alunos';
 const AlunoService = {
 
   // Lista todos os alunos (paginado)
-  // Consome: GET /alunos/findall?page=0&size=10&search=termo
-  findAll: async (page = 0, size = 10, search = '') => {
+  // Consome: GET /alunos/findall?page=0&size=10&search=termo&status=ATIVO
+  findAll: async (page = 0, size = 10, search = '', status = '') => {
     try {
       const params = { page, size };
-      // Só adiciona o parametro se tiver busca
+      
+      // Só adiciona o parametro se tiver valor
       if (search) {
           params.search = search;
+      }
+      
+      // Adiciona o filtro de status se for passado (ex: 'ATIVO')
+      if (status) {
+          params.status = status;
       }
 
       const response = await api.get(`${BASE_URL}/findall`, { params });

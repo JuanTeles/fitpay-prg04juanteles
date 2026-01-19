@@ -3,6 +3,8 @@ import { Container, Table, Button, Card, Spinner, Alert, Form } from 'react-boot
 import { Link } from 'react-router-dom';
 import ModalConfirmacao from '../../components/ModalConfirmacao';
 import MatriculaModal from '../../components/MatriculaModal'; 
+// Import do novo modal de histórico
+import HistoricoMatriculasModal from '../../components/HistoricoMatriculasModal';
 import AlunoService from '../../services/AlunoService';
 
 const AlunoList = () => {
@@ -20,6 +22,10 @@ const AlunoList = () => {
     // Estados para Matrícula 
     const [showModalMatricula, setShowModalMatricula] = useState(false);
     const [alunoParaMatricula, setAlunoParaMatricula] = useState(null);
+
+    // Estados para Histórico (NOVO)
+    const [showModalHistorico, setShowModalHistorico] = useState(false);
+    const [alunoParaHistorico, setAlunoParaHistorico] = useState(null);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -62,6 +68,12 @@ const AlunoList = () => {
     const handleAbrirMatricula = (aluno) => {
         setAlunoParaMatricula(aluno);
         setShowModalMatricula(true);
+    };
+
+    // Função para abrir o Modal de Histórico (NOVO)
+    const handleAbrirHistorico = (aluno) => {
+        setAlunoParaHistorico(aluno);
+        setShowModalHistorico(true);
     };
 
     return (
@@ -171,6 +183,16 @@ const AlunoList = () => {
                                                 Matricular
                                             </td>
                                             <td className="text-end pe-4">
+                                                {/* Botão Histórico (NOVO) */}
+                                                <span 
+                                                    className="me-3 text-info"
+                                                    style={{ cursor: 'pointer' }}
+                                                    title="Ver Histórico"
+                                                    onClick={() => handleAbrirHistorico(aluno)}
+                                                >
+                                                    <i className="bi bi-clock-history fs-5"></i>
+                                                </span>
+
                                                 <Link to={`/alunos/editar/${aluno.id}`} className="me-3">
                                                     <i className="bi bi-pencil-square fs-5 text-primary"></i>
                                                 </Link>
@@ -203,6 +225,13 @@ const AlunoList = () => {
                 show={showModalMatricula}
                 handleClose={() => setShowModalMatricula(false)}
                 aluno={alunoParaMatricula}
+            />
+
+            {/* Modal de Histórico */}
+            <HistoricoMatriculasModal 
+                show={showModalHistorico}
+                handleClose={() => setShowModalHistorico(false)}
+                aluno={alunoParaHistorico}
             />
         </Container>
     );

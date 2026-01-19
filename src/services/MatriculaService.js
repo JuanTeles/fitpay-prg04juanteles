@@ -15,9 +15,17 @@ const findAll = async (page = 0, size = 10) => {
     return response.data;
 };
 
+const findByAluno = async (alunoId) => {
+    const response = await axios.get(`${API_URL}/aluno/${alunoId}`);
+    return response.data;
+};
+
 const MatriculaService = {
     create,
-    findAll
+    findAll,
+    findByAluno
 };
+
+
 
 export default MatriculaService;

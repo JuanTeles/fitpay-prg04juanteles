@@ -9,30 +9,30 @@ const HistoricoMatriculasModal = ({ show, handleClose, aluno }) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        // Carrega o histórico de Planos
+        const carregarDados = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                const dadosMatriculas = await MatriculaService.findByAluno(aluno.id);
+
+                setMatriculas(dadosMatriculas);
+
+            } catch (err) {
+                console.error(err);
+                setError("Não foi possível carregar os dados.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
         if (show && aluno) {
             carregarDados();
         } else {
             setMatriculas([]);
         }
     }, [show, aluno]);
-
-    // Carrega o histórico de Planos
-    const carregarDados = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-
-            const dadosMatriculas = await MatriculaService.findByAluno(aluno.id);
-
-            setMatriculas(dadosMatriculas);
-
-        } catch (err) {
-            console.error(err);
-            setError("Não foi possível carregar os dados.");
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const getStatusVariant = (status) => {
         switch (status) {

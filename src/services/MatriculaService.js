@@ -25,11 +25,22 @@ const update = async (matriculaData) => {
     return response.data;
 };
 
+const getNovasNoMes = async () => {
+    const response = await axios.get(`${API_URL}/dashboard/novas-no-mes`);
+    return response.data;
+};
+
+const getARenovar = async () => {
+    const response = await axios.get(`${API_URL}/dashboard/a-renovar`);
+    return response.data;
+};
+
 const MatriculaService = {
     create,
     findAll,
     findByAluno,
-    update
+    getNovasNoMes,
+    getARenovar
 };
 
 export default MatriculaService;

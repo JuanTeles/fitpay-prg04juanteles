@@ -1,9 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import '../styles/global.css'; 
+import AlunoService from '../services/AlunoService';
+import MatriculaService from '../services/MatriculaService';
+import '../styles/global.css';
 
 const Dashboard = () => {
+  // Estado para armazenar os indicadores
+  const [kpis, setKpis] = useState({
+    alunosAtivos: 0,
+    matriculasMes: 0,
+    aRenovar: 0
+  });
+
+  // Busca os dados ao carregar a página
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const [alunosResponse, matriculasResponse, aRenovarResponse] = await Promise.all([
+          // Busca total de alunos ativos
+          // Parâmetros: page=0, size=1, search='', status='ATIVO'
+          AlunoService.findAll(0, 1, '', 'ATIVO'),
+
+          // Busca novas matrículas do mês
+          MatriculaService.getNovasNoMes(),
+
+          // 3usca matrículas a renovar (7 dias)
+          MatriculaService.getARenovar()
+        ]);
+
+        setKpis({
+          alunosAtivos: alunosResponse.totalElements || 0, // O backend retorna um Page, usamos o totalElements
+          matriculasMes: matriculasResponse || 0,
+          aRenovar: aRenovarResponse || 0
+        });
+
+      } catch (error) {
+        console.error("Erro ao carregar dados do dashboard:", error);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
   return (
     <Container className="py-5">
       {/* --- Seção de Boas-vindas --- */}
@@ -14,8 +53,8 @@ const Dashboard = () => {
 
       {/* --- Linha de KPIs (Indicadores) --- */}
       <Row className="mb-4 g-4">
-        
-        {/* Card 1: Alunos Ativos (Base Total) */}
+
+        {/* Card 1: Alunos Ativos (DADOS REAIS) */}
         <Col md={4}>
           <Card className="shadow-sm border-0 h-100 border-start border-4 border-primary">
             <Card.Body className="d-flex align-items-center">
@@ -24,14 +63,15 @@ const Dashboard = () => {
               </div>
               <div>
                 <h6 className="text-muted mb-1">Alunos Ativos</h6>
-                <h3 className="fw-bold text-midnight mb-0">0</h3>
+                {/* Exibe o valor do estado */}
+                <h3 className="fw-bold text-midnight mb-0">{kpis.alunosAtivos}</h3>
                 <small className="text-success fw-bold">Base Total</small>
               </div>
             </Card.Body>
           </Card>
         </Col>
 
-        {/* Card 2: A Renovar (Retenção) */}
+        {/* Card 2: A Renovar (DADOS REAIS) */}
         <Col md={4}>
           <Card className="shadow-sm border-0 h-100 border-start border-4 border-warning">
             <Card.Body className="d-flex align-items-center">
@@ -40,14 +80,15 @@ const Dashboard = () => {
               </div>
               <div>
                 <h6 className="text-muted mb-1">A Renovar (7 dias)</h6>
-                <h3 className="fw-bold text-midnight mb-0">0</h3>
+                {/* Exibe o valor do estado */}
+                <h3 className="fw-bold text-midnight mb-0">{kpis.aRenovar}</h3>
                 <small className="text-muted">Risco de bloqueio</small>
               </div>
             </Card.Body>
           </Card>
         </Col>
 
-        {/* Card 3: Novas Matrículas (Crescimento) - ALTERADO AQUI */}
+        {/* Card 3: Novas Matrículas (DADOS REAIS) */}
         <Col md={4}>
           <Card className="shadow-sm border-0 h-100 border-start border-4 border-success">
             <Card.Body className="d-flex align-items-center">
@@ -56,7 +97,8 @@ const Dashboard = () => {
               </div>
               <div>
                 <h6 className="text-muted mb-1">Novas Matrículas (Mês)</h6>
-                <h3 className="fw-bold text-success mb-0">0</h3>
+                {/* Exibe o valor do estado */}
+                <h3 className="fw-bold text-success mb-0">{kpis.matriculasMes}</h3>
                 <small className="text-success">
                   <i className="bi bi-graph-up-arrow me-1"></i>
                   Crescimento
@@ -69,10 +111,9 @@ const Dashboard = () => {
 
       {/* --- Seção de Acesso Rápido --- */}
       <h4 className="fw-bold text-midnight mb-3 mt-5">Gerenciamento Rápido</h4>
-      
-      {/* 'justify-content-center' para centralizar os itens da segunda linha */}
+
       <Row className="g-4 justify-content-center">
-        
+
         {/* Botão: Planos */}
         <Col md={4} sm={6}>
           <Card className="h-100 shadow-sm border-0 text-center hover-card">
@@ -105,7 +146,7 @@ const Dashboard = () => {
         <Col md={4} sm={6}>
           <Card className="h-100 shadow-sm border-0 text-center hover-card">
             <Card.Body className="d-flex flex-column align-items-center justify-content-center py-4">
-              <i className="bi bi-person-badge fs-1 text-primary mb-3"></i> 
+              <i className="bi bi-person-badge fs-1 text-primary mb-3"></i>
               <Card.Title>Alunos</Card.Title>
               <Card.Text className="text-muted small">Gerencie matrículas e cadastros.</Card.Text>
               <Link to="/alunos">

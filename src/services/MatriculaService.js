@@ -20,12 +20,16 @@ const findByAluno = async (alunoId) => {
     return response.data;
 };
 
+const update = async (matriculaData) => {
+    const response = await axios.put(`${API_URL}/update`, matriculaData);
+    return response.data;
+};
+
 const MatriculaService = {
     create,
     findAll,
-    findByAluno
+    findByAluno,
+    update
 };
-
-
 
 export default MatriculaService;

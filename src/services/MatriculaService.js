@@ -39,6 +39,7 @@ const MatriculaService = {
     create,
     findAll,
     findByAluno,
+    update,
     getNovasNoMes,
     getARenovar
 };

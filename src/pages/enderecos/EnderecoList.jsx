@@ -58,21 +58,28 @@ const EnderecoList = () => {
 
   return (
     <Container className="py-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="fw-bold text-midnight">Gerenciar Endereços</h2>
+      
+      {/* Cabeçalho Responsivo */}
+      <div className="d-flex flex-column flex-lg-row justify-content-between align-items-center mb-4 gap-3">
+        {/* Título: Centralizado no mobile, esquerda no desktop */}
+        <div className="text-center text-lg-start w-100 w-lg-auto">
+            <h2 className="fw-bold text-midnight">Gerenciar Endereços</h2>
+        </div>
         
-        <div className="d-flex gap-2 align-items-center">
+        {/* Controles */}
+        <div className="d-flex flex-column flex-md-row gap-2 align-items-stretch align-items-md-center w-100 w-lg-auto">
             <Form.Control
                 type="text"
                 placeholder="Pesquisar endereço..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                style={{ width: '280px' }}
+                style={{ minWidth: '280px' }}
             />
-            <Link to="/enderecos/novo">
-            <Button variant="primary" className="fw-bold shadow-sm text-nowrap">
-                <i className="bi bi-plus-lg me-2"></i>Novo Endereço
-            </Button>
+            {/* Link/Botão */}
+            <Link to="/enderecos/novo" className="d-block d-md-inline-block">
+                <Button variant="primary" className="fw-bold shadow-sm text-nowrap w-100 w-md-auto">
+                    <i className="bi bi-plus-lg me-2"></i>Novo Endereço
+                </Button>
             </Link>
         </div>
       </div>
@@ -116,19 +123,22 @@ const EnderecoList = () => {
                         <td>{end.cidade} / {end.uf}</td>
                         <td>{end.cep}</td>
                         <td className="text-end pe-4">
-                        <Link to={`/enderecos/editar/${end.id}`}>
-                            <Button variant="link" className="text-primary p-0 me-3" title="Editar">
-                            <i className="bi bi-pencil-square fs-5"></i>
-                            </Button>
-                        </Link>
-                        <Button 
-                            variant="link" 
-                            className="text-danger p-0" 
-                            title="Excluir"
-                            onClick={() => confirmDelete(end.id)}
-                        >
-                            <i className="bi bi-trash fs-5"></i>
-                        </Button>
+                            <div className="d-flex align-items-center justify-content-end gap-3">
+                                {/* Botão Editar: Link direto (sem button dentro) */}
+                                <Link to={`/enderecos/editar/${end.id}`} className="text-primary" title="Editar">
+                                    <i className="bi bi-pencil-square fs-5"></i>
+                                </Link>
+
+                                {/* Botão Excluir: Botão limpo */}
+                                <Button 
+                                    variant="link" 
+                                    className="text-danger p-0 border-0" 
+                                    title="Excluir"
+                                    onClick={() => confirmDelete(end.id)}
+                                >
+                                    <i className="bi bi-trash fs-5"></i>
+                                </Button>
+                            </div>
                         </td>
                     </tr>
                     ))

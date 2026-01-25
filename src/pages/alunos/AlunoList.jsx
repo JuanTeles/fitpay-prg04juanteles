@@ -78,22 +78,23 @@ const AlunoList = () => {
 
     return (
         <Container className="py-5">
-            <div className="d-flex justify-content-between align-items-center mb-4">
+            {/* Cabeçalho Responsivo */}
+            <div className="d-flex flex-column flex-lg-row justify-content-between align-items-center mb-4 gap-3">
                 
                 {/* LADO ESQUERDO: Títulos */}
-                <div>
+                <div className="text-center text-lg-start w-100 w-lg-auto">
                     <h2 className="fw-bold text-midnight">Alunos</h2>
                     <p className="text-muted mb-0">Gestão de alunos</p>
                 </div>
 
-                {/* LADO DIREITO: Filtros + Botão (Alinhados na horizontal) */}
-                <div className="d-flex gap-2 align-items-center">
+                {/* LADO DIREITO: Filtros + Botão */}
+                <div className="d-flex flex-column flex-md-row gap-2 align-items-stretch align-items-md-center w-100 w-lg-auto">
                     
                     {/* FILTRO */}
                     <Form.Select 
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        style={{ width: '150px' }}
+                        style={{ minWidth: '150px' }}
                         className="shadow-sm"
                     >
                         <option value="">Todos</option>
@@ -107,12 +108,12 @@ const AlunoList = () => {
                         placeholder="Pesquisar por nome ou CPF..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        style={{ width: '280px' }} 
+                        style={{ minWidth: '280px' }} 
                     />
 
                     {/* BOTÃO NOVO ALUNO */}
-                    <Link to="/alunos/novo">
-                        <Button variant="primary" className="fw-bold text-nowrap shadow-sm">
+                    <Link to="/alunos/novo" className="d-block d-md-inline-block">
+                        <Button variant="primary" className="fw-bold text-nowrap shadow-sm w-100 w-md-auto">
                             <i className="bi bi-plus-lg me-1"></i>
                             Novo Aluno
                         </Button>
@@ -154,54 +155,69 @@ const AlunoList = () => {
                                     alunos.map((aluno) => (
                                         <tr key={aluno.id}>
                                             <td className="ps-4 fw-bold">
-                                                {aluno.nome}
-                                                {/* Badge de Status (Visualização) */}
-                                                {/* Verifica se a propriedade 'ativo' retornada pelo backend é true */}
-                                                {aluno.ativo ? (
-                                                    <span className="badge bg-success ms-2" style={{ fontSize: '0.7em', verticalAlign: 'middle' }}>
-                                                        ATIVO
-                                                    </span>
-                                                ) : (
-                                                    <span className="badge bg-secondary ms-2" style={{ fontSize: '0.7em', verticalAlign: 'middle' }}>
-                                                        INATIVO
-                                                    </span>
-                                                )}
+                                                {/* Container Flex para alinhar Nome e Badge */}
+                                                <div className="d-flex align-items-center flex-wrap gap-2">
+                                                    
+                                                    {/* Primeiro Nome */}
+                                                    <span>{aluno.nome ? aluno.nome.split(' ')[0] : ''}</span>
+                                                    
+                                                    {/* Badge de Status */}
+                                                    {aluno.ativo ? (
+                                                        <span className="badge bg-success" style={{ fontSize: '0.7em' }}>
+                                                            ATIVO
+                                                        </span>
+                                                    ) : (
+                                                        <span className="badge bg-secondary" style={{ fontSize: '0.7em' }}>
+                                                            INATIVO
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </td>
-                                            <td>{aluno.cpf}</td>
+                                            <td className="text-nowrap">{aluno.cpf}</td>
                                             <td>{aluno.email}</td>
-                                            <td>{aluno.telefone || '-'}</td>
-                                            <td>
+                                            <td className="text-nowrap">{aluno.telefone || '-'}</td>
+                                            
+                                            <td className='text-center'>
                                                 {/* Botão de Matrícula */}
                                                 <Button 
                                                     variant="link" 
-                                                    className="p-0 me-3 text-success"
+                                                    className="p-0 me-3 text-success text-nowrap"
                                                     title="Realizar Matrícula"
                                                     onClick={() => handleAbrirMatricula(aluno)}
                                                 >
                                                     <i className="bi bi-card-checklist fs-5"></i>
                                                 </Button>
-                                                Matricular
                                             </td>
+                                            
+                                            {/* AÇÕES */}
                                             <td className="text-end pe-4">
-                                                {/* Botão Histórico (NOVO) */}
-                                                <span 
-                                                    className="me-3 text-info"
-                                                    style={{ cursor: 'pointer' }}
+                                            <div className="d-flex align-items-center justify-content-end gap-3">
+                                                
+                                                {/* Botão Histórico */}
+                                                <Button 
+                                                    variant="link"
+                                                    className="text-info p-0 border-0"
                                                     title="Ver Histórico"
                                                     onClick={() => handleAbrirHistorico(aluno)}
                                                 >
                                                     <i className="bi bi-clock-history fs-5"></i>
-                                                </span>
+                                                </Button>
 
-                                                <Link to={`/alunos/editar/${aluno.id}`} className="me-3">
-                                                    <i className="bi bi-pencil-square fs-5 text-primary"></i>
+                                                {/* Botão Editar */}
+                                                <Link to={`/alunos/editar/${aluno.id}`} className="text-primary" title="Editar">
+                                                    <i className="bi bi-pencil-square fs-5"></i>
                                                 </Link>
-                                                <span 
-                                                    style={{ cursor: 'pointer' }} 
+
+                                                {/* Botão Excluir */}
+                                                <Button 
+                                                    variant="link"
+                                                    className="text-danger p-0 border-0"
+                                                    title="Excluir"
                                                     onClick={() => handleAbrirConfirmacao(aluno.id)}
                                                 >
-                                                    <i className="bi bi-trash fs-5 text-danger"></i>
-                                                </span>
+                                                    <i className="bi bi-trash fs-5"></i>
+                                                </Button>
+                                            </div>
                                             </td>
                                         </tr>
                                     ))

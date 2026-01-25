@@ -27,7 +27,7 @@ const PlanoList = () => {
         setPlanos(dados.content || []); 
         setError(null);
         } catch (err) {
-           setError('Erro ao carregar planos. Verifique se o Backend está rodando.');
+            setError('Erro ao carregar planos. Verifique se o Backend está rodando.');
             console.error(err);
         } finally {
             setLoading(false);
@@ -53,15 +53,15 @@ const PlanoList = () => {
 
     return (
         <Container className="py-5">
-        
+            
             {/* Cabeçalho da Página */}
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <div>
+            <div className="d-flex flex-column flex-lg-row justify-content-between align-items-stretch align-items-lg-center mb-4 gap-3">
+                <div className="text-center text-lg-start">
                     <h2 className="fw-bold text-midnight">Planos</h2>
                     <p className="text-muted">Gerencie os pacotes de matrícula da academia.</p>
                 </div>
-                <Link to="/planos/novo">
-                    <Button variant="primary" className="fw-bold shadow-sm">
+                <Link to="/planos/novo" className="d-block">
+                    <Button variant="primary" className="fw-bold shadow-sm w-100">
                         <i className="bi bi-plus-lg me-2"></i>Novo Plano
                     </Button>
                 </Link>
@@ -111,20 +111,22 @@ const PlanoList = () => {
                                             </Badge>
                                         </td>
                                         <td className="text-muted small">{plano.descricao || '-'}</td>
+                                        
+                                        {/* AÇÕES */}
                                         <td className="text-end pe-4">
-                                            <Link to={`/planos/editar/${plano.id}`}>
-                                                <Button variant="link" className="text-primary p-0 me-3" title="Editar">
+                                            <div className="d-flex align-items-center justify-content-end gap-3">
+                                                <Link to={`/planos/editar/${plano.id}`} className="text-primary" title="Editar">
                                                     <i className="bi bi-pencil-square fs-5"></i>
+                                                </Link>
+                                                <Button 
+                                                    variant="link" 
+                                                    className="text-danger p-0 border-0" 
+                                                    title="Excluir"
+                                                    onClick={() => handleAbrirConfirmacao(plano.id)} 
+                                                >
+                                                    <i className="bi bi-trash fs-5"></i>
                                                 </Button>
-                                            </Link>
-                                            <Button 
-                                                variant="link" 
-                                                className="text-danger p-0" 
-                                                title="Excluir"
-                                                onClick={() => handleAbrirConfirmacao(plano.id)} // Nova função aqui
-                                            >
-                                                <i className="bi bi-trash fs-5"></i>
-                                            </Button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))

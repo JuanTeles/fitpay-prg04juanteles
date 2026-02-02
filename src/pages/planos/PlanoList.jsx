@@ -3,7 +3,7 @@ import { Container, Table, Card, Alert, Badge } from 'react-bootstrap';
 import ModalConfirmacao from '../../components/ModalConfirmacao';
 import PageTitulo from '../../components/global/PageTitulo';
 import BotaoCadastro from '../../components/global/BotaoCadastro';
-import BotõesAcao from '../../components/global/BotõesAcao';
+import BotõesAcao from '../../components/global/BotoesAcao';
 import EstadoVazio from '../../components/global/EstadoVazio';
 import CarregandoSpinner from '../../components/global/CarregandoSpinner';
 import PlanoService from '../../services/PlanoService';

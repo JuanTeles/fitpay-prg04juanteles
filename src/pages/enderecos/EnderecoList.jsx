@@ -4,7 +4,7 @@ import ModalConfirmacao from '../../components/ModalConfirmacao';
 import PageTitulo from '../../components/global/PageTitulo';
 import BarraBusca from '../../components/global/BarraBusca';
 import BotaoCadastro from '../../components/global/BotaoCadastro';
-import BotõesAcao from '../../components/global/BotõesAcao';
+import BotõesAcao from '../../components/global/BotoesAcao';
 import EstadoVazio from '../../components/global/EstadoVazio';
 import CarregandoSpinner from '../../components/global/CarregandoSpinner';
 import EnderecoService from '../../services/EnderecoService';

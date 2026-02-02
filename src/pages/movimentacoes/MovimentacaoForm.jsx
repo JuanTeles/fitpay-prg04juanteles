@@ -34,7 +34,8 @@ const MovimentacaoForm = () => {
                 ...formData,
                 valor: parseFloat(formData.valor),
                 // Se a data estiver vazia, removemos para o backend usar LocalDateTime.now()
-                data_hora: formData.data_hora || null 
+                // Adiciona segundos ":00" se data preenchida para compatibilidade datetime-local
+                data_hora: formData.data_hora ? formData.data_hora + ':00' : null 
             };
 
             await MovimentacaoService.save(payload);
@@ -46,6 +47,7 @@ const MovimentacaoForm = () => {
         }
     };
 
+    // Spinner de carregamento
     if (loading) return <CarregandoSpinner />;
 
     return (
@@ -54,6 +56,7 @@ const MovimentacaoForm = () => {
 
             <Card className="shadow-sm">
                 <Card.Body>
+                    {/* Exibe erro caso ocorra */}
                     {erro && <Alert variant="danger">{erro}</Alert>}
 
                     <Form onSubmit={handleSubmit}>
@@ -71,6 +74,7 @@ const MovimentacaoForm = () => {
                                     />
                                 </Form.Group>
                             </Col>
+
                             <Col md={3} className="mb-3">
                                 <Form.Group>
                                     <Form.Label>Valor (R$)</Form.Label>
@@ -84,6 +88,7 @@ const MovimentacaoForm = () => {
                                     />
                                 </Form.Group>
                             </Col>
+
                             <Col md={3} className="mb-3">
                                 <Form.Group>
                                     <Form.Label>Data (Opcional)</Form.Label>
@@ -106,10 +111,11 @@ const MovimentacaoForm = () => {
                                         value={formData.tipo_movimentacao}
                                         onChange={handleChange}
                                     >
-                                        <option value="ENTRADA">Entrada (Receita)</option>
+                                        <option value="SAIDA">Saída (Despesa)</option>
                                     </Form.Select>
                                 </Form.Group>
                             </Col>
+
                             <Col md={6} className="mb-3">
                                 <Form.Group>
                                     <Form.Label>Categoria</Form.Label>
@@ -132,6 +138,7 @@ const MovimentacaoForm = () => {
                             </Col>
                         </Row>
 
+                        {/* Botões de ação */}
                         <div className="d-flex justify-content-end gap-2">
                             <Button variant="secondary" onClick={() => navigate('/movimentacoes')}>
                                 Cancelar

@@ -5,6 +5,8 @@ import PageTitulo from '../../components/global/PageTitulo';
 import CarregandoSpinner from '../../components/global/CarregandoSpinner';
 import EstadoVazio from '../../components/global/EstadoVazio';
 import BotaoCadastro from '../../components/global/BotaoCadastro';
+import BotoesAcao from '../../components/global/BotoesAcao'; 
+import ModalConfirmacao from '../../components/ModalConfirmacao';
 
 const MovimentacaoList = () => {
     const [movimentacoes, setMovimentacoes] = useState([]);
@@ -14,10 +16,16 @@ const MovimentacaoList = () => {
     const [tipoFilter, setTipoFilter] = useState('');
     const [categoriaFilter, setCategoriaFilter] = useState('');
 
+    // Estados para exclusão
+    const [showModal, setShowModal] = useState(false);
+    const [movToDelete, setMovToDelete] = useState(null);
+
+    // Carrega lista inicial
     useEffect(() => {
         fetchData();
     }, []);
 
+    // Recarrega lista quando filtros mudam
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
             fetchData(tipoFilter, categoriaFilter);
@@ -26,13 +34,16 @@ const MovimentacaoList = () => {
         return () => clearTimeout(delayDebounce);
     }, [tipoFilter, categoriaFilter]);
 
-
-
+    // Função para buscar movimentações
     const fetchData = async (tipo = '', categoria = '') => {
         try {
             setLoading(true);
             const data = await MovimentacaoService.findAll(0, 50, tipo, categoria);
-            setMovimentacoes(data.content || []);
+            // Ordenar do mais recente para o mais antigo
+            const ordenadas = (data.content || []).sort(
+                (a, b) => new Date(b.data_hora) - new Date(a.data_hora)
+            );
+            setMovimentacoes(ordenadas);
         } catch (error) {
             console.error("Erro ao carregar movimentações");
         } finally {
@@ -40,6 +51,24 @@ const MovimentacaoList = () => {
         }
     };
 
+    // Abre modal de confirmação
+    const handleAbrirConfirmacao = (id) => {
+        setMovToDelete(id);
+        setShowModal(true);
+    };
+
+    // Confirma exclusão
+    const confirmarExclusao = async () => {
+        try {
+            if (!movToDelete) return;
+            await MovimentacaoService.delete(movToDelete); // Chama o backend
+            setMovimentacoes(prev => prev.filter(m => m.id !== movToDelete)); // Atualiza lista
+            setShowModal(false);
+            setMovToDelete(null);
+        } catch (err) {
+            console.error("Erro ao excluir movimentação");
+        }
+    };
 
     if (loading) return <CarregandoSpinner />;
 
@@ -99,6 +128,7 @@ const MovimentacaoList = () => {
                             <th>Categoria</th>
                             <th>Tipo</th>
                             <th className="text-end">Valor</th>
+                            <th className="text-end">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -120,11 +150,31 @@ const MovimentacaoList = () => {
                                     {m.tipo_movimentacao === 'ENTRADA' ? '+ ' : '- '}
                                     {m.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                 </td>
+
+                                {/* Ações somente para SAÍDA */}
+                                <td className="text-end">
+                                    {m.tipo_movimentacao === 'SAIDA' && (
+                                        <BotoesAcao
+                                            id={m.id}
+                                            rotaEditar={`/movimentacoes/editar/${m.id}`}
+                                            onDelete={handleAbrirConfirmacao}
+                                        />
+                                    )}
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </Table>
             )}
+
+            {/* Modal de confirmação */}
+            <ModalConfirmacao
+                show={showModal}
+                onHide={() => setShowModal(false)}
+                onConfirm={confirmarExclusao}
+                titulo="Confirmar Exclusão"
+                mensagem="Deseja realmente excluir esta movimentação?"
+            />
         </Container>
     );
 };

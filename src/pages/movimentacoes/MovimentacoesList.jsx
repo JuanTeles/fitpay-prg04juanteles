@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Table, Badge } from 'react-bootstrap'; 
+import { Container, Table, Badge, Form } from 'react-bootstrap'; 
 import MovimentacaoService from '../../services/MovimentacaoService';
 import PageTitulo from '../../components/global/PageTitulo';
 import CarregandoSpinner from '../../components/global/CarregandoSpinner';
@@ -10,14 +10,28 @@ const MovimentacaoList = () => {
     const [movimentacoes, setMovimentacoes] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // Estados para os filtros
+    const [tipoFilter, setTipoFilter] = useState('');
+    const [categoriaFilter, setCategoriaFilter] = useState('');
+
     useEffect(() => {
         fetchData();
     }, []);
 
-    const fetchData = async () => {
+    useEffect(() => {
+        const delayDebounce = setTimeout(() => {
+            fetchData(tipoFilter, categoriaFilter);
+        }, 300);
+
+        return () => clearTimeout(delayDebounce);
+    }, [tipoFilter, categoriaFilter]);
+
+
+
+    const fetchData = async (tipo = '', categoria = '') => {
         try {
             setLoading(true);
-            const data = await MovimentacaoService.findAll(0, 50);
+            const data = await MovimentacaoService.findAll(0, 50, tipo, categoria);
             setMovimentacoes(data.content || []);
         } catch (error) {
             console.error("Erro ao carregar movimentações");
@@ -26,21 +40,56 @@ const MovimentacaoList = () => {
         }
     };
 
+
     if (loading) return <CarregandoSpinner />;
 
     return (
         <Container className="py-4">
-            {/* Cabeçalho com Título e Botão lado a lado */}
-            <div className="d-flex justify-content-between align-items-center mb-3">
+            {/* Cabeçalho com Título, Filtros e Botão */}
+            <div className="d-flex flex-column flex-lg-row justify-content-between align-items-center mb-4 gap-3">
                 <PageTitulo 
                     titulo="Fluxo de Caixa" 
-                    subtitulo="Histórico de entradas e saídas financeiras" 
+                    descricao="Histórico de entradas e saídas financeiras" 
                 />
-                <BotaoCadastro para="/movimentacoes/novo" texto="Nova Movimentação" />
+
+                <div className="d-flex flex-column flex-md-row gap-2 align-items-stretch align-items-md-center w-100 w-lg-auto">
+                    {/* Filtro de Tipo */}
+                    <Form.Select 
+                        value={tipoFilter}
+                        onChange={(e) => setTipoFilter(e.target.value)}
+                        className="shadow-sm"
+                        style={{ minWidth: '150px' }}
+                    >
+                        <option value="">Todos os Tipos</option>
+                        <option value="ENTRADA">Entrada</option>
+                        <option value="SAIDA">Saída</option>
+                    </Form.Select>
+
+                    {/* Filtro de Categoria */}
+                    <Form.Select 
+                        value={categoriaFilter}
+                        onChange={(e) => setCategoriaFilter(e.target.value)}
+                        className="shadow-sm"
+                        style={{ minWidth: '180px' }}
+                    >
+                        <option value="">Todas Categorias</option>
+                        <option value="MENSALIDADE">Mensalidade</option>
+                        <option value="SALARIO">Salário</option>
+                        <option value="COMPRA_MATERIAL">Compra de Material</option>
+                        <option value="ALUGUEL">Aluguel</option>
+                        <option value="CONTA_LUZ">Conta de Luz</option>
+                        <option value="CONTA_AGUA">Conta de Água</option>
+                        <option value="INTERNET">Internet</option>
+                        <option value="MANUTENCAO">Manutenção</option>
+                        <option value="OUTROS">Outros</option>
+                    </Form.Select>
+
+                    <BotaoCadastro para="/movimentacoes/novo" texto="Nova Movimentação" />
+                </div>
             </div>
 
             {movimentacoes.length === 0 ? (
-                <EstadoVazio mensagem="Nenhuma movimentação registrada no período." />
+                <EstadoVazio mensagem="Nenhuma movimentação registrada para os filtros selecionados." />
             ) : (
                 <Table hover responsive className="shadow-sm bg-white rounded">
                     <thead className="bg-light">

@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Table, Card, Badge, Alert } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Container, Table, Badge, Alert } from 'react-bootstrap';
 import PageTitulo from '../../components/global/PageTitulo';
-import BotaoCadastro from '../../components/global/BotaoCadastro';
 import EstadoVazio from '../../components/global/EstadoVazio';
 import CarregandoSpinner from '../../components/global/CarregandoSpinner';
 import PagamentoService from '../../services/PagamentoService';
@@ -31,9 +30,8 @@ const PagamentoList = () => {
 
   return (
     <Container className="py-5">
-      <div className="d-flex flex-column flex-lg-row justify-content-between align-items-center mb-4 gap-3">
-        <PageTitulo titulo="Financeiro" descricao="Gestão de pagamentos" />
-        <BotaoCadastro para="/financeiro/novo" texto="Novo Pagamento" />
+      <div className="d-flex flex-column flex-lg-row justify-content-between align-items-stretch align-items-lg-center mb-4 gap-3">
+        <PageTitulo titulo="Pagamentos" descricao="Gestão de pagamentos" />
       </div>
 
       {error && <Alert variant="danger">{error}</Alert>}
@@ -41,16 +39,16 @@ const PagamentoList = () => {
       {loading ? (
         <CarregandoSpinner mensagem="Carregando pagamentos..." />
       ) : (
-        <Card className="shadow-sm border-0">
-          <Card.Body className="p-0">
-            <Table hover responsive className="mb-0">
-              <thead className="bg-light">
+        <div className="card shadow-sm border-0">
+          <div className="card-body p-0">
+            <Table responsive hover className="mb-0 align-middle">
+              <thead className="bg-light text-secondary">
                 <tr>
+                  <th className='ps-4'>ID Pagamento</th>
                   <th>Data</th>
                   <th>Referência</th>
                   <th>Valor</th>
-                  <th>Método</th>
-                  <th>Aluno (Contrato)</th>
+                  <th className="text-end pe-4">Método</th>
                 </tr>
               </thead>
               <tbody>
@@ -63,22 +61,22 @@ const PagamentoList = () => {
                 ) : (
                   pagamentos.map((pag) => (
                     <tr key={pag.id}>
+                      <td className="ps-4">#{pag.id || pag.contrato_id}</td>
                       <td>{pag.data_pagamento}</td>
                       <td>{pag.referencia_periodo}</td>
                       <td className="fw-bold text-success">
-                        R$ {pag.valor_pago?.toFixed(2)}
+                        {pag.valor_pago?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                       </td>
-                      <td>
+                      <td className='text-end pe-4'>
                         <Badge bg="info">{pag.metodo_pagamento}</Badge>
                       </td>
-                      <td>Contrato #{pag.contrato_aluno?.id || pag.contrato_id}</td>
                     </tr>
                   ))
                 )}
               </tbody>
             </Table>
-          </Card.Body>
-        </Card>
+          </div>
+        </div>
       )}
     </Container>
   );

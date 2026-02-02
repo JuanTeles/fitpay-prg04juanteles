@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Container, Card, Form, Button, Row, Col, Alert } from 'react-bootstrap';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import PlanoService from '../../services/PlanoService';

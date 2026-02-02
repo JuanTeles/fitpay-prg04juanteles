@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, Table, Card, Alert, Badge } from 'react-bootstrap';
 import ModalConfirmacao from '../../components/ModalConfirmacao';
 import PageTitulo from '../../components/global/PageTitulo';

@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
-import PageTitulo from '../components/global/PageTitulo';
 
 const About = () => {
     useEffect(() => {

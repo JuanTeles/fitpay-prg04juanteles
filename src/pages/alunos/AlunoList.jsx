@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Table, Button, Card, Spinner, Alert, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Container, Table, Button, Card, Alert, Form } from 'react-bootstrap';
 import ModalConfirmacao from '../../components/ModalConfirmacao';
 import MatriculaModal from '../../components/MatriculaModal'; 
 // Import do novo modal de histórico
 import HistoricoMatriculasModal from '../../components/HistoricoMatriculasModal';
 import PageTitulo from '../../components/global/PageTitulo';
+import BarraBusca from '../../components/global/BarraBusca';
+import BotaoCadastro from '../../components/global/BotaoCadastro';
+import BotõesAcao from '../../components/global/BotõesAcao';
+import EstadoVazio from '../../components/global/EstadoVazio';
+import CarregandoSpinner from '../../components/global/CarregandoSpinner';
 import AlunoService from '../../services/AlunoService';
 
 const AlunoList = () => {
@@ -101,32 +105,23 @@ const AlunoList = () => {
                     </Form.Select>
 
                     {/* CAMPO DE BUSCA */}
-                    <Form.Control
-                        type="text"
+                    <BarraBusca
                         placeholder="Pesquisar por nome ou CPF..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        style={{ minWidth: '280px' }} 
                     />
 
                     {/* BOTÃO NOVO ALUNO */}
-                    <Link to="/alunos/novo" className="d-block d-md-inline-block">
-                        <Button variant="primary" className="fw-bold text-nowrap shadow-sm w-100 w-md-auto">
-                            <i className="bi bi-plus-lg me-1"></i>
-                            Novo Aluno
-                        </Button>
-                    </Link>
+                    <BotaoCadastro para="/alunos/novo" texto="Novo Aluno" />
                 </div>
             </div>
 
             {/* ALERTA DE ERRO */}
             {error && <Alert variant="danger">{error}</Alert>}
 
-            {/* TABELA */}
+            {/* TAB ELA */}
             {loading ? (
-                <div className="text-center py-5">
-                    <Spinner animation="border" variant="primary" />
-                </div>
+                <CarregandoSpinner mensagem="Carregando alunos..." />
             ) : (
                 <Card className="shadow-sm border-0">
                     <Card.Body className="p-0">
@@ -143,12 +138,12 @@ const AlunoList = () => {
                             </thead>
                             <tbody>
                                 {alunos.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="6" className="text-center py-5 text-muted">
-                                            <i className="bi bi-people fs-1 d-block mb-2"></i>
-                                            {searchTerm || statusFilter ? 'Nenhum resultado encontrado.' : 'Nenhum aluno cadastrado.'}
-                                        </td>
-                                    </tr>
+                                    <EstadoVazio 
+                                        icone="bi-people" 
+                                        colSpan="6" 
+                                        mensagemVazia="Nenhum aluno cadastrado."
+                                        temFiltro={searchTerm || statusFilter}
+                                    />
                                 ) : (
                                     alunos.map((aluno) => (
                                         <tr key={aluno.id}>
@@ -201,20 +196,12 @@ const AlunoList = () => {
                                                     <i className="bi bi-clock-history fs-5"></i>
                                                 </Button>
 
-                                                {/* Botão Editar */}
-                                                <Link to={`/alunos/editar/${aluno.id}`} className="text-primary" title="Editar">
-                                                    <i className="bi bi-pencil-square fs-5"></i>
-                                                </Link>
-
-                                                {/* Botão Excluir */}
-                                                <Button 
-                                                    variant="link"
-                                                    className="text-danger p-0 border-0"
-                                                    title="Excluir"
-                                                    onClick={() => handleAbrirConfirmacao(aluno.id)}
-                                                >
-                                                    <i className="bi bi-trash fs-5"></i>
-                                                </Button>
+                                                {/* Botões Editar e Excluir */}
+                                                <BotõesAcao 
+                                                    id={aluno.id}
+                                                    rotaEditar={`/alunos/editar/${aluno.id}`}
+                                                    onDelete={handleAbrirConfirmacao}
+                                                />
                                             </div>
                                             </td>
                                         </tr>

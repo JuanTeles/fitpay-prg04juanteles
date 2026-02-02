@@ -49,7 +49,7 @@ const PagamentoList = () => {
             <Table responsive hover className="mb-0 align-middle">
               <thead className="bg-light text-secondary">
                 <tr>
-                  <th className='ps-4'>ID Pagamento</th>
+                  <th className='ps-4'>ID</th>
                   <th>Aluno</th>
                   <th>Data</th>
                   <th>Referência</th>
@@ -61,14 +61,16 @@ const PagamentoList = () => {
               {pagamentos.map((pag) => (
                 <tr key={pag.id}>
                   <td className="ps-4 text-muted">#{pag.id}</td>
-                  <td className="fw-semibold">{pag.matricula?.aluno?.nome || 'N/A'}</td> 
+                  <td className="fw-semibold">
+                    {pag.matricula?.aluno?.nome ? pag.matricula.aluno.nome.split(' ')[0] : 'N/A'}
+                  </td>
                   <td>{new Date(pag.data_pagamento).toLocaleDateString('pt-BR')}</td>
                   <td>{pag.referencia_periodo}</td>
                   <td className="fw-bold text-success">
                     {pag.valor_pago?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                   </td>
                   <td className='text-end pe-4'>
-                    <Badge bg={pag.metodo_pagamento === 'PIX' ? 'success' : 'primary'}>
+                    <Badge bg={pag.metodo_pagamento === 'DINHEIRO' ? 'success' : 'primary'}>
                       {pag.metodo_pagamento}
                     </Badge>
                   </td>

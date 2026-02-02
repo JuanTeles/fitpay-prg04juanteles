@@ -5,6 +5,7 @@ import ModalConfirmacao from '../../components/ModalConfirmacao';
 import MatriculaModal from '../../components/MatriculaModal'; 
 // Import do novo modal de histórico
 import HistoricoMatriculasModal from '../../components/HistoricoMatriculasModal';
+import PageTitulo from '../../components/global/PageTitulo';
 import AlunoService from '../../services/AlunoService';
 
 const AlunoList = () => {
@@ -81,11 +82,8 @@ const AlunoList = () => {
             {/* Cabeçalho Responsivo */}
             <div className="d-flex flex-column flex-lg-row justify-content-between align-items-center mb-4 gap-3">
                 
-                {/* LADO ESQUERDO: Títulos */}
-                <div className="text-center text-lg-start w-100 w-lg-auto">
-                    <h2 className="fw-bold text-midnight">Alunos</h2>
-                    <p className="text-muted mb-0">Gestão de alunos</p>
-                </div>
+                {/* LADO ESQUERDO: Título */}
+                <PageTitulo titulo="Alunos" descricao="Gestão de alunos" />
 
                 {/* LADO DIREITO: Filtros + Botão */}
                 <div className="d-flex flex-column flex-md-row gap-2 align-items-stretch align-items-md-center w-100 w-lg-auto">

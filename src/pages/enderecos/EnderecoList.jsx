@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Table, Button, Spinner, Alert, Form } from 'react-bootstrap';
 import ModalConfirmacao from '../../components/ModalConfirmacao';
+import PageTitulo from '../../components/global/PageTitulo';
 import EnderecoService from '../../services/EnderecoService';
 
 const EnderecoList = () => {
@@ -61,10 +62,8 @@ const EnderecoList = () => {
       
       {/* Cabeçalho Responsivo */}
       <div className="d-flex flex-column flex-lg-row justify-content-between align-items-center mb-4 gap-3">
-        {/* Título: Centralizado no mobile, esquerda no desktop */}
-        <div className="text-center text-lg-start w-100 w-lg-auto">
-            <h2 className="fw-bold text-midnight">Gerenciar Endereços</h2>
-        </div>
+        {/* Título */}
+        <PageTitulo titulo="Gerenciar Endereços" />
         
         {/* Controles */}
         <div className="d-flex flex-column flex-md-row gap-2 align-items-stretch align-items-md-center w-100 w-lg-auto">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Table, Button, Card, Spinner, Alert, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import ModalConfirmacao from '../../components/ModalConfirmacao';
+import PageTitulo from '../../components/global/PageTitulo';
 import PlanoService from '../../services/PlanoService';
 
 const PlanoList = () => {
@@ -56,10 +57,7 @@ const PlanoList = () => {
             
             {/* Cabeçalho da Página */}
             <div className="d-flex flex-column flex-lg-row justify-content-between align-items-stretch align-items-lg-center mb-4 gap-3">
-                <div className="text-center text-lg-start">
-                    <h2 className="fw-bold text-midnight">Planos</h2>
-                    <p className="text-muted">Gerencie os pacotes de matrícula da academia.</p>
-                </div>
+                <PageTitulo titulo="Planos" descricao="Gerencie os pacotes de matrícula da academia." />
                 <Link to="/planos/novo" className="d-block">
                     <Button variant="primary" className="fw-bold shadow-sm w-100">
                         <i className="bi bi-plus-lg me-2"></i>Novo Plano

@@ -133,7 +133,7 @@ const HistoricoMatriculasModal = ({ show, handleClose, aluno }) => {
                                         {matriculas.map((mat) => {
                                             // Detalhes do plano são acessados diretamente do objeto 'mat.plano'
                                             const nomePlano = mat.plano ? mat.plano.nome : 'Plano Removido/Não Encontrado';
-                                            const valorPlano = mat.plano ? mat.plano.valor : null;
+                                            const valorMatricula = mat.valor_fechado;
                                             
                                             return (
                                                 <tr key={mat.id}>
@@ -143,8 +143,8 @@ const HistoricoMatriculasModal = ({ show, handleClose, aluno }) => {
                                                     <td>{new Date(mat.data_inicio).toLocaleDateString('pt-BR')}</td>
                                                     <td>{new Date(mat.data_fim).toLocaleDateString('pt-BR')}</td>
                                                     <td>
-                                                        {valorPlano 
-                                                            ? `R$ ${valorPlano.toFixed(2)}` 
+                                                        {valorMatricula
+                                                            ? `R$ ${valorMatricula.toFixed(2)}` 
                                                             : '-'
                                                         }
                                                     </td>

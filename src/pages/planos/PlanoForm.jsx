@@ -61,7 +61,6 @@ const PlanoForm = () => {
         };
 
         // SÓ adiciona o ID no objeto se ele realmente existir (Edição).
-        // Se for cadastro (id null/undefined), NÃO enviamos o campo "id" pro Java.
         if (id) {
             payload.id = parseInt(id);
             await PlanoService.update(payload);
@@ -69,7 +68,7 @@ const PlanoForm = () => {
             await PlanoService.save(payload); 
         }
 
-        // Volta para a lista
+        // Volta para a lista (Sucesso, sem alert)
         navigate('/planos');
 
     } catch (err) {
@@ -80,9 +79,8 @@ const PlanoForm = () => {
         let msg = 'Erro ao salvar o plano.';
         
         if (err.response) {
-            // Se o Backend respondeu (ex: 400, 500)
             if (err.response.data && err.response.data.message) {
-                msg = err.response.data.message; // Mensagem geral
+                msg = err.response.data.message; 
             } 
             // Se for erro de validação de campos (ValidationErrors)
             else if (err.response.data && Array.isArray(err.response.data.errors)) {
@@ -115,8 +113,11 @@ const PlanoForm = () => {
                 <p className="text-muted small">Preencha as informações do pacote de matrícula.</p>
               </div>
 
-              {/* Mensagem de Erro */}
-              {error && <Alert variant="danger">{error}</Alert>}
+              {error && (
+                <Alert variant="danger" onClose={() => setError(null)} dismissible>
+                    {error}
+                </Alert>
+              )}
 
               {/* Formulário */}
               <Form onSubmit={handleSubmit}>

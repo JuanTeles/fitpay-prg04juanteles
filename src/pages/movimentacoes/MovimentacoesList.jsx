@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Table, Badge, Form } from 'react-bootstrap'; 
+import { Container, Table, Badge, Form, Alert } from 'react-bootstrap'; // 1. Adicionado Alert
 import MovimentacaoService from '../../services/MovimentacaoService';
 import PageTitulo from '../../components/global/PageTitulo';
 import CarregandoSpinner from '../../components/global/CarregandoSpinner';
@@ -11,6 +11,7 @@ import ModalConfirmacao from '../../components/ModalConfirmacao';
 const MovimentacaoList = () => {
     const [movimentacoes, setMovimentacoes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [erro, setErro] = useState(''); // 2. Novo estado para mensagens de erro
 
     // Estados para os filtros
     const [tipoFilter, setTipoFilter] = useState('');
@@ -46,6 +47,7 @@ const MovimentacaoList = () => {
             setMovimentacoes(ordenadas);
         } catch (error) {
             console.error("Erro ao carregar movimentações");
+            setErro('Não foi possível carregar a lista de movimentações.');
         } finally {
             setLoading(false);
         }
@@ -65,8 +67,12 @@ const MovimentacaoList = () => {
             setMovimentacoes(prev => prev.filter(m => m.id !== movToDelete)); // Atualiza lista
             setShowModal(false);
             setMovToDelete(null);
+            setErro(''); // 3. Limpa erro em caso de sucesso
         } catch (err) {
             console.error("Erro ao excluir movimentação");
+            // 4. Feedback visual em vez de console ou alert
+            setErro('Erro ao excluir a movimentação. Tente novamente.'); 
+            setShowModal(false);
         }
     };
 
@@ -116,6 +122,13 @@ const MovimentacaoList = () => {
                     <BotaoCadastro para="/movimentacoes/novo" texto="Nova Movimentação" />
                 </div>
             </div>
+
+            {/* 5. Exibição do Alerta de Erro */}
+            {erro && (
+                <Alert variant="danger" onClose={() => setErro('')} dismissible className="mb-4">
+                    {erro}
+                </Alert>
+            )}
 
             {movimentacoes.length === 0 ? (
                 <EstadoVazio mensagem="Nenhuma movimentação registrada para os filtros selecionados." />

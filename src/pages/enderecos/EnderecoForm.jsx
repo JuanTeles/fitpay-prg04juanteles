@@ -54,11 +54,9 @@ const EnderecoForm = () => {
       };
 
       if (id) {
-        await EnderecoService.update({ ...payload, id }); // Adiciona ID para o PUT
-        alert('Endereço atualizado com sucesso!');
+        await EnderecoService.update({ ...payload, id }); 
       } else {
         await EnderecoService.save(payload);
-        alert('Endereço cadastrado com sucesso!');
       }
       navigate('/enderecos'); // Volta para a lista
     } catch (err) {
@@ -88,7 +86,11 @@ const EnderecoForm = () => {
         </h2>
       </div>
 
-      {error && <Alert variant="danger">{error}</Alert>}
+      {error && (
+        <Alert variant="danger" onClose={() => setError(null)} dismissible>
+          {error}
+        </Alert>
+      )}
 
       <div className="card shadow-sm border-0">
         <div className="card-body p-4">

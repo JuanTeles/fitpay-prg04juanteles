@@ -49,8 +49,10 @@ const PlanoList = () => {
             setPlanos(planos.filter(p => p.id !== planoToDelete));
             setShowModal(false); // Fecha o modal
             setPlanoToDelete(null); // Limpa o ID
+            setError(null); // Limpa erros anteriores no sucesso
         } catch (err) {
-            alert('Erro ao excluir o plano.');
+            // PADRONIZAÇÃO: Substituição do alert por feedback visual
+            setError('Não foi possível excluir o plano. Ele pode estar vinculado a uma matrícula.');
             setShowModal(false);
         }
     };
@@ -64,8 +66,12 @@ const PlanoList = () => {
                 <BotaoCadastro para="/planos/novo" texto="Novo Plano" />
             </div>
 
-            {/* Alerta de Erro (se houver) */}
-            {error && <Alert variant="danger">{error}</Alert>}
+            {/* Alerta de Erro (se houver) - PADRONIZADO (Dismissible) */}
+            {error && (
+                <Alert variant="danger" onClose={() => setError(null)} dismissible>
+                    {error}
+                </Alert>
+            )}
 
             {/* Renderização Condicional: Carregando (Padronizado com Alunos/Endereços) */}
             {loading ? (

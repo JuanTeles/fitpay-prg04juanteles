@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Container, Table, Button, Card, Alert, Form } from 'react-bootstrap';
 import ModalConfirmacao from '../../components/ModalConfirmacao';
 import MatriculaModal from '../../components/MatriculaModal'; 
-// Import do novo modal de histórico
 import HistoricoMatriculasModal from '../../components/HistoricoMatriculasModal';
 import PageTitulo from '../../components/global/PageTitulo';
 import BarraBusca from '../../components/global/BarraBusca';
@@ -28,7 +27,7 @@ const AlunoList = () => {
     const [showModalMatricula, setShowModalMatricula] = useState(false);
     const [alunoParaMatricula, setAlunoParaMatricula] = useState(null);
 
-    // Estados para Histórico (NOVO)
+    // Estados para Histórico
     const [showModalHistorico, setShowModalHistorico] = useState(false);
     const [alunoParaHistorico, setAlunoParaHistorico] = useState(null);
 
@@ -60,11 +59,14 @@ const AlunoList = () => {
 
     const confirmarExclusao = async () => {
         try {
+            if (!alunoToDelete) return;
             await AlunoService.delete(alunoToDelete);
             setAlunos(alunos.filter(a => a.id !== alunoToDelete));
             setShowModal(false); 
+            setAlunoToDelete(null);
+            setError(null); // Limpa erros anteriores
         } catch (err) {
-            alert('Erro ao excluir aluno.');
+            setError('Não foi possível excluir o aluno. Verifique se ele possui matrículas ativas.');
             setShowModal(false);
         }
     };
@@ -75,7 +77,7 @@ const AlunoList = () => {
         setShowModalMatricula(true);
     };
 
-    // Função para abrir o Modal de Histórico (NOVO)
+    // Função para abrir o Modal de Histórico 
     const handleAbrirHistorico = (aluno) => {
         setAlunoParaHistorico(aluno);
         setShowModalHistorico(true);
@@ -116,10 +118,13 @@ const AlunoList = () => {
                 </div>
             </div>
 
-            {/* ALERTA DE ERRO */}
-            {error && <Alert variant="danger">{error}</Alert>}
+            {/* PADRONIZAÇÃO: Alert dismissible (fechável) */}
+            {error && (
+                <Alert variant="danger" onClose={() => setError(null)} dismissible>
+                    {error}
+                </Alert>
+            )}
 
-            {/* TAB ELA */}
             {loading ? (
                 <CarregandoSpinner mensagem="Carregando alunos..." />
             ) : (
@@ -156,13 +161,9 @@ const AlunoList = () => {
                                                     
                                                     {/* Badge de Status */}
                                                     {aluno.ativo ? (
-                                                        <span className="badge bg-success" style={{ fontSize: '0.7em' }}>
-                                                            ATIVO
-                                                        </span>
+                                                        <span className="badge bg-success" style={{ fontSize: '0.7em' }}>ATIVO</span>
                                                     ) : (
-                                                        <span className="badge bg-secondary" style={{ fontSize: '0.7em' }}>
-                                                            INATIVO
-                                                        </span>
+                                                        <span className="badge bg-secondary" style={{ fontSize: '0.7em' }}>INATIVO</span>
                                                     )}
                                                 </div>
                                             </td>
@@ -184,25 +185,22 @@ const AlunoList = () => {
                                             
                                             {/* AÇÕES */}
                                             <td className="text-end pe-4">
-                                            <div className="d-flex align-items-center justify-content-end gap-3">
-                                                
-                                                {/* Botão Histórico */}
-                                                <Button 
-                                                    variant="link"
-                                                    className="text-info p-0 border-0"
-                                                    title="Ver Histórico"
-                                                    onClick={() => handleAbrirHistorico(aluno)}
-                                                >
-                                                    <i className="bi bi-clock-history fs-5"></i>
-                                                </Button>
+                                                <div className="d-flex align-items-center justify-content-end gap-3">
+                                                    <Button 
+                                                        variant="link"
+                                                        className="text-info p-0 border-0"
+                                                        title="Ver Histórico"
+                                                        onClick={() => handleAbrirHistorico(aluno)}
+                                                    >
+                                                        <i className="bi bi-clock-history fs-5"></i>
+                                                    </Button>
 
-                                                {/* Botões Editar e Excluir */}
-                                                <BotõesAcao 
-                                                    id={aluno.id}
-                                                    rotaEditar={`/alunos/editar/${aluno.id}`}
-                                                    onDelete={handleAbrirConfirmacao}
-                                                />
-                                            </div>
+                                                    <BotõesAcao 
+                                                        id={aluno.id}
+                                                        rotaEditar={`/alunos/editar/${aluno.id}`}
+                                                        onDelete={handleAbrirConfirmacao}
+                                                    />
+                                                </div>
                                             </td>
                                         </tr>
                                     ))

@@ -54,9 +54,12 @@ const EnderecoList = () => {
       try {
         await EnderecoService.delete(enderecoToDelete);
         setShowModal(false);
+        setEnderecoToDelete(null);
         fetchEnderecos(searchTerm); // Recarrega a lista
+        setError(null); // Limpa erros anteriores no sucesso
       } catch (err) {
-        alert('Erro ao excluir endereço.');
+        setError('Não foi possível excluir o endereço. Ele pode estar vinculado a um aluno.');
+        setShowModal(false);
       }
     }
   };
@@ -80,7 +83,11 @@ const EnderecoList = () => {
         </div>
       </div>
 
-      {error && <Alert variant="danger">{error}</Alert>}
+      {error && (
+        <Alert variant="danger" onClose={() => setError(null)} dismissible>
+            {error}
+        </Alert>
+      )}
 
       {loading ? (
         <CarregandoSpinner mensagem="Carregando endereços..." />

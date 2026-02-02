@@ -19,7 +19,7 @@ const MovimentacaoForm = () => {
         data_hora: '' 
     });
 
-    // NOVO: Carrega os dados se for edição
+    // Carrega os dados se for edição
     useEffect(() => {
         if (id) {
             carregarDados(id);
@@ -31,13 +31,10 @@ const MovimentacaoForm = () => {
             setLoading(true);
             const dados = await MovimentacaoService.findById(idMov);
             
-            // Formata a data para o input datetime-local (yyyy-MM-ddThh:mm)
-            // O backend geralmente manda algo como '2025-02-02T10:00:00'. 
-            // O input html aceita apenas até minutos ou segundos dependendo da config.
-            // Vamos garantir que corte os segundos se necessário ou ajuste o formato.
+            // Formata a data para o input datetime-local
             let dataFormatada = '';
             if(dados.data_hora) {
-                dataFormatada = dados.data_hora.substring(0, 16); // Pega '2025-02-02T10:00'
+                dataFormatada = dados.data_hora.substring(0, 16);
             }
 
             setFormData({
@@ -75,12 +72,13 @@ const MovimentacaoForm = () => {
 
             // Lógica de Decisão: Edição ou Criação
             if (id) {
-                payload.id = parseInt(id); // Adiciona o ID ao payload
+                payload.id = parseInt(id);
                 await MovimentacaoService.update(payload);
             } else {
                 await MovimentacaoService.save(payload);
             }
 
+            // SUCESSO: Redireciona imediatamente (Padrão sem alert)
             navigate('/movimentacoes'); 
         } catch (error) {
             console.error(error);
@@ -90,7 +88,7 @@ const MovimentacaoForm = () => {
         }
     };
 
-    if (loading && !formData.descricao) return <CarregandoSpinner />; // Spinner apenas no load inicial
+    if (loading && !formData.descricao) return <CarregandoSpinner />;
 
     return (
         <Container className="py-4">
@@ -101,8 +99,12 @@ const MovimentacaoForm = () => {
 
             <Card className="shadow-sm">
                 <Card.Body>
-                    {/* Exibe erro caso ocorra */}
-                    {erro && <Alert variant="danger">{erro}</Alert>}
+                    {/* PADRONIZAÇÃO: Alert agora é 'dismissible' (fechável) */}
+                    {erro && (
+                        <Alert variant="danger" onClose={() => setErro('')} dismissible>
+                            {erro}
+                        </Alert>
+                    )}
 
                     <Form onSubmit={handleSubmit}>
                         <Row>
@@ -155,7 +157,6 @@ const MovimentacaoForm = () => {
                                         name="tipo_movimentacao" 
                                         value={formData.tipo_movimentacao}
                                         onChange={handleChange}
-                                        // Se quiser bloquear troca de tipo na edição, use disabled={!!id}
                                     >
                                         <option value="SAIDA">Saída (Despesa)</option>
                                         <option value="ENTRADA">Entrada (Receita)</option>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Container, Card, Form, Button, Row, Col, Alert } from 'react-bootstrap';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import AlunoService from '../../services/AlunoService';
-import EnderecoCampos from '../../components/EnderecoCampos'; // Reutilizando seu componente
+import EnderecoCampos from '../../components/EnderecoCampos'; 
 
 const AlunoForm = () => {
     const navigate = useNavigate();
@@ -14,10 +14,10 @@ const AlunoForm = () => {
         cpf: '',
         email: '',
         telefone: '',
-        dataMatricula: '' // Opcional, backend gera se nulo
+        dataMatricula: '' 
     });
 
-    // Dados do Endereço (Separado para facilitar o uso do EnderecoCampos)
+    // Dados do Endereço
     const [endereco, setEndereco] = useState({
         cep: '',
         logradouro: '',
@@ -45,7 +45,7 @@ const AlunoForm = () => {
                 telefone: dados.telefone,
                 dataMatricula: dados.data_matricula || ''
             });
-            // Se o aluno tiver endereço, preenchemos
+            
             if (dados.endereco) {
                 setEndereco(dados.endereco);
             }
@@ -54,7 +54,7 @@ const AlunoForm = () => {
         }
     };
 
-    // Função simples de validação de CPF
+    // Validação de CPF
     const validarCPF = (cpf) => {
         cpf = cpf.replace(/[^\d]+/g, '');
         if (cpf === '') return false;
@@ -98,7 +98,7 @@ const AlunoForm = () => {
                 cpf: aluno.cpf,
                 email: aluno.email,
                 telefone: aluno.telefone,
-                data_matricula: dataFormatada, // Envia null se estiver vazio
+                data_matricula: dataFormatada,
                 endereco: { ...endereco }
             };
 
@@ -130,7 +130,11 @@ const AlunoForm = () => {
                         <Card.Body className="p-4">
                             <h3 className="fw-bold text-midnight mb-4">{id ? 'Editar Aluno' : 'Novo Aluno'}</h3>
                             
-                            {error && <Alert variant="danger">{error}</Alert>}
+                            {error && (
+                                <Alert variant="danger" onClose={() => setError(null)} dismissible>
+                                    {error}
+                                </Alert>
+                            )}
 
                             <Form onSubmit={handleSubmit}>
                                 <h5 className="text-secondary mb-3 border-bottom pb-2">Dados Pessoais</h5>
@@ -164,7 +168,6 @@ const AlunoForm = () => {
                                 </Row>
 
                                 <h5 className="text-secondary mt-4 mb-3 border-bottom pb-2">Endereço</h5>
-                                {/* Reutilizando seu componente existente */}
                                 <EnderecoCampos 
                                     formData={endereco} 
                                     setFormData={setEndereco} 

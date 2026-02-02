@@ -7,6 +7,7 @@ const MatriculaModal = ({ show, handleClose, aluno }) => {
     // Estados para armazenar os dados do formulário
     const [planos, setPlanos] = useState([]);
     const [planoSelecionadoId, setPlanoSelecionadoId] = useState('');
+    const [metodoPagamento, setMetodoPagamento] = useState('');
     
     const [dataInicio, setDataInicio] = useState(() => {
         const hoje = new Date();
@@ -70,6 +71,12 @@ const MatriculaModal = ({ show, handleClose, aluno }) => {
             alert("Por favor, selecione um plano.");
             return;
         }
+
+        if (!metodoPagamento) {
+            alert("O pagamento é obrigatório para confirmar a matrícula.");
+            return;
+        }
+
         if (!dataFim) {
             alert("Erro ao calcular data de término. Verifique o plano.");
             return;
@@ -82,6 +89,7 @@ const MatriculaModal = ({ show, handleClose, aluno }) => {
                 plano: { id: planoSelecionadoId }, 
                 data_inicio: dataInicio,       
                 data_fim: dataFim,             
+                metodo_pagamento: metodoPagamento || null,
                 status: "ATIVO"                
             };
 
@@ -153,6 +161,27 @@ const MatriculaModal = ({ show, handleClose, aluno }) => {
                             </Form.Group>
                         </div>
                     </div>
+
+                    {/* Método de Pagamento */}
+                    <Form.Group className="mb-3">
+                        <Form.Label className="fw-bold">Método de Pagamento</Form.Label>
+                        <Form.Select 
+                            value={metodoPagamento} 
+                            onChange={(e) => setMetodoPagamento(e.target.value)}
+                            required
+                            className={!metodoPagamento ? "border-danger" : "border-success"}
+                        >
+                            <option value="">Selecione o método de pagamento...</option> {/* Placeholder vazio força a escolha */}
+                            <option value="PIX">PIX</option>
+                            <option value="CARTAO">Cartão</option>
+                            <option value="DINHEIRO">Dinheiro</option>
+                        </Form.Select>
+                        {!metodoPagamento && (
+                            <Form.Text className="text-danger">
+                                * É necessário registrar o pagamento para ativar a matrícula.
+                            </Form.Text>
+                        )}
+                    </Form.Group>
                 </Form>
             </Modal.Body>
             

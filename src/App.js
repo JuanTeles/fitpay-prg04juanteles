@@ -17,7 +17,6 @@ import EnderecoForm from './pages/enderecos/EnderecoForm';
 import AlunoList from './pages/alunos/AlunoList';
 import AlunoForm from './pages/alunos/AlunoForm';
 import PagamentoList from './pages/pagamentos/PagamentoList';
-import PagamentoForm from './pages/pagamentos/PagamentoForm';
 
 const App = () => {
     return (
@@ -51,7 +50,6 @@ const App = () => {
 
                     {/* Rotas Financeiro/Pagamentos (Sprint 3) */}
                     <Route path="/financeiro" element={<PagamentoList />} />
-                    <Route path="/financeiro/novo" element={<PagamentoForm />} />
                 </Routes>
             </main>
 

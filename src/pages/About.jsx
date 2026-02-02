@@ -1,33 +1,43 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
+import { Container, Row, Col, Card } from 'react-bootstrap';
+import PageTitulo from '../components/global/PageTitulo';
 
 const About = () => {
     useEffect(() => {
-        // Define o título da página quando o componente é montado 
-        document.title = 'Sobre';
-    }, []); // O array vazio [] garante que a função rode apenas uma vez
+        document.title = 'Sobre - FitPay';
+    }, []);
 
     return (
-        <div className="d-flex align-items-center justify-content-center">
-            <div className="container">
-                <div className="row justify-content-center">
-                    <div className="col-12 col-md-10 col-lg-8">
-                        <div className="card">
-                            <div className="card-body d-grid gap-2 col-lg-8 col-12 mx-auto py-5">
-                                <h1 className="card-title text-center text-azul display-3 mb-3">
-                                FitPay
-                                </h1>
-                                <h5 className="card-subtitle mb-4 text-muted text-center fs-4">
+        <Container className="py-5">
+            <Row className="justify-content-center">
+                <Col md={10} lg={8}>
+                    <Card className="shadow-sm border-0">
+                        <Card.Body className="p-5 text-center">
+                            {/* Título da Marca */}
+                            <h1 className="display-3 fw-bold text-secondary mb-3">
+                                Fit<span style={{ color: 'var(--primary-color)' }}>Pay</span>
+                            </h1>
+                            
+                            {/* Subtítulo / Slogan */}
+                            <h2 className="h4 text-secondary mb-4">
                                 Sua gestão financeira, mais forte que nunca.
-                                </h5>
-                                <p className="text-center mb-0 fs-6">
-                                FitPay é a solução completa para academias que desejam otimizar o fluxo de caixa, controlar mensalidades e gerenciar despesas de forma simples e eficiente.
-                                </p>
+                            </h2>
+                            
+                            {/* Texto Descritivo */}
+                            <p className="text-muted mb-0" style={{ fontSize: '1.1rem', lineHeight: '1.6' }}>
+                                FitPay é a solução completa para academias que desejam otimizar o fluxo de caixa, 
+                                controlar mensalidades e gerenciar despesas de forma simples e eficiente.
+                            </p>
+
+                            {/* Rodapé do Card (Opcional, para versão) */}
+                            <div className="mt-5 pt-4 border-top">
+                                <small className="text-muted">Versão 1.0.0 &copy; 2026 FitPay Inc.</small>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 

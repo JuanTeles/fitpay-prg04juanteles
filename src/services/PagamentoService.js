@@ -11,9 +11,12 @@ const PagamentoService = {
     metodo = null
   ) => {
     try {
-      const params = { page, size };
+      const params = { 
+        page, 
+        size,
+        sort: "dataPagamento,desc"
+      };
 
-      // Só adiciona o parametro se tiver valor REAL (não vazio, não null)
       if (nome && nome.trim() !== "") {
         params.nome = nome.trim();
       }

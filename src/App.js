@@ -48,8 +48,9 @@ const App = () => {
                     <Route path="/alunos/novo" element={<AlunoForm />} />
                     <Route path="/alunos/editar/:id" element={<AlunoForm />} />
 
-                    {/* Rotas Financeiro/Pagamentos (Sprint 3) */}
-                    <Route path="/financeiro" element={<PagamentoList />} />
+                    {/* Rotas Pagamentos (Sprint 3) */}
+                    <Route path="/pagamento" element={<PagamentoList />} />
+
                 </Routes>
             </main>
 

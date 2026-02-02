@@ -50,7 +50,7 @@ const Header = () => {
                 Alunos
               </Nav.Link>
               
-              <Nav.Link as={NavLink} to="/financeiro" className="text-light">
+              <Nav.Link as={NavLink} to="/movimentacoes" className="text-light">
                 Financeiro
               </Nav.Link>
             </Nav>

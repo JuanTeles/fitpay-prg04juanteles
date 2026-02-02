@@ -13,6 +13,16 @@ const MovimentacaoService = {
       console.error("Erro ao buscar movimentações:", error);
       throw error;
     }
+  },
+
+  save: async (movimentacao) => {
+    try {
+      const response = await api.post(`${BASE_URL}/save`, movimentacao);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao salvar movimentação:", error);
+      throw error;
+    }
   }
 };
 

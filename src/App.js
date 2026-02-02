@@ -18,6 +18,7 @@ import AlunoList from './pages/alunos/AlunoList';
 import AlunoForm from './pages/alunos/AlunoForm';
 import PagamentoList from './pages/pagamentos/PagamentoList';
 import MovimentacoesList from './pages/movimentacoes/MovimentacoesList';
+import MovimentacaoForm from './pages/movimentacoes/MovimentacaoForm';
 
 const App = () => {
     return (
@@ -54,6 +55,8 @@ const App = () => {
 
                     {/* Rotas MovimentacaoFinanceira (Sprint 3) */}
                     <Route path="/movimentacoes" element={<MovimentacoesList />} />
+                    <Route path="/movimentacoes/novo" element={<MovimentacaoForm />} />
+                    <Route path="/movimentacoes/editar/:id" element={<MovimentacaoForm />} />
                 </Routes>
             </main>
 

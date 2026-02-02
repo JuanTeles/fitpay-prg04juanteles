@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Table, Badge } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Container, Table, Badge } from 'react-bootstrap'; 
 import MovimentacaoService from '../../services/MovimentacaoService';
 import PageTitulo from '../../components/global/PageTitulo';
 import CarregandoSpinner from '../../components/global/CarregandoSpinner';
 import EstadoVazio from '../../components/global/EstadoVazio';
+import BotaoCadastro from '../../components/global/BotaoCadastro';
 
 const MovimentacaoList = () => {
     const [movimentacoes, setMovimentacoes] = useState([]);
@@ -29,10 +30,14 @@ const MovimentacaoList = () => {
 
     return (
         <Container className="py-4">
-            <PageTitulo 
-                titulo="Fluxo de Caixa" 
-                subtitulo="Histórico de entradas e saídas financeiras" 
-            />
+            {/* Cabeçalho com Título e Botão lado a lado */}
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                <PageTitulo 
+                    titulo="Fluxo de Caixa" 
+                    subtitulo="Histórico de entradas e saídas financeiras" 
+                />
+                <BotaoCadastro para="/movimentacoes/novo" texto="Nova Movimentação" />
+            </div>
 
             {movimentacoes.length === 0 ? (
                 <EstadoVazio mensagem="Nenhuma movimentação registrada no período." />

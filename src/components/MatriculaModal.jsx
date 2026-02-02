@@ -82,6 +82,11 @@ const MatriculaModal = ({ show, handleClose, aluno }) => {
             return;
         }
 
+        if (dataInicio < hojeFormatado) {
+                alert("A data de início não pode ser anterior a hoje.");
+                return;
+            }
+
         try {
             setLoading(true);
             const novaMatricula = {
@@ -105,6 +110,8 @@ const MatriculaModal = ({ show, handleClose, aluno }) => {
             setLoading(false);
         }
     };
+
+    const hojeFormatado = new Date().toISOString().split('T')[0];
 
     return (
         <Modal show={show} onHide={handleClose} centered>
@@ -143,6 +150,7 @@ const MatriculaModal = ({ show, handleClose, aluno }) => {
                                 <Form.Control 
                                     type="date" 
                                     value={dataInicio} 
+                                    min={hojeFormatado}
                                     onChange={(e) => setDataInicio(e.target.value)} 
                                 />
                             </Form.Group>

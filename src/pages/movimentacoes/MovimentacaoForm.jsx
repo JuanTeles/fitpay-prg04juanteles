@@ -1,22 +1,58 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; 
 import { Container, Form, Button, Card, Alert, Row, Col } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom'; 
 import MovimentacaoService from '../../services/MovimentacaoService';
 import PageTitulo from '../../components/global/PageTitulo';
 import CarregandoSpinner from '../../components/global/CarregandoSpinner';
 
 const MovimentacaoForm = () => {
     const navigate = useNavigate();
+    const { id } = useParams(); // Pega o ID da URL (se for edição)
     const [loading, setLoading] = useState(false);
     const [erro, setErro] = useState('');
 
     const [formData, setFormData] = useState({
         descricao: '',
         valor: '',
-        tipo_movimentacao: 'SAIDA', // Padrão SAIDA para despesas
-        categoria_movimentacao: 'ALUGUEL', // Padrão
-        data_hora: '' // Se vazio, backend assume agora
+        tipo_movimentacao: 'SAIDA',
+        categoria_movimentacao: 'ALUGUEL',
+        data_hora: '' 
     });
+
+    // NOVO: Carrega os dados se for edição
+    useEffect(() => {
+        if (id) {
+            carregarDados(id);
+        }
+    }, [id]);
+
+    const carregarDados = async (idMov) => {
+        try {
+            setLoading(true);
+            const dados = await MovimentacaoService.findById(idMov);
+            
+            // Formata a data para o input datetime-local (yyyy-MM-ddThh:mm)
+            // O backend geralmente manda algo como '2025-02-02T10:00:00'. 
+            // O input html aceita apenas até minutos ou segundos dependendo da config.
+            // Vamos garantir que corte os segundos se necessário ou ajuste o formato.
+            let dataFormatada = '';
+            if(dados.data_hora) {
+                dataFormatada = dados.data_hora.substring(0, 16); // Pega '2025-02-02T10:00'
+            }
+
+            setFormData({
+                descricao: dados.descricao,
+                valor: dados.valor,
+                tipo_movimentacao: dados.tipo_movimentacao,
+                categoria_movimentacao: dados.categoria_movimentacao,
+                data_hora: dataFormatada
+            });
+        } catch (error) {
+            setErro('Erro ao carregar dados para edição.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -33,26 +69,35 @@ const MovimentacaoForm = () => {
             const payload = {
                 ...formData,
                 valor: parseFloat(formData.valor),
-                // Se a data estiver vazia, removemos para o backend usar LocalDateTime.now()
-                // Adiciona segundos ":00" se data preenchida para compatibilidade datetime-local
+                // Adiciona segundos ":00" se data preenchida
                 data_hora: formData.data_hora ? formData.data_hora + ':00' : null 
             };
 
-            await MovimentacaoService.save(payload);
-            navigate('/movimentacoes'); // Volta para a lista
+            // Lógica de Decisão: Edição ou Criação
+            if (id) {
+                payload.id = parseInt(id); // Adiciona o ID ao payload
+                await MovimentacaoService.update(payload);
+            } else {
+                await MovimentacaoService.save(payload);
+            }
+
+            navigate('/movimentacoes'); 
         } catch (error) {
+            console.error(error);
             setErro('Erro ao salvar movimentação. Verifique os dados.');
         } finally {
             setLoading(false);
         }
     };
 
-    // Spinner de carregamento
-    if (loading) return <CarregandoSpinner />;
+    if (loading && !formData.descricao) return <CarregandoSpinner />; // Spinner apenas no load inicial
 
     return (
         <Container className="py-4">
-            <PageTitulo titulo="Nova Movimentação" subtitulo="Lançamento manual de receitas ou despesas" />
+            <PageTitulo 
+                titulo={id ? "Editar Movimentação" : "Nova Movimentação"} 
+                subtitulo={id ? "Alterar dados do lançamento" : "Lançamento manual de receitas ou despesas"} 
+            />
 
             <Card className="shadow-sm">
                 <Card.Body>
@@ -91,7 +136,7 @@ const MovimentacaoForm = () => {
 
                             <Col md={3} className="mb-3">
                                 <Form.Group>
-                                    <Form.Label>Data (Opcional)</Form.Label>
+                                    <Form.Label>Data (Opcional na criação)</Form.Label>
                                     <Form.Control 
                                         type="datetime-local" 
                                         name="data_hora"
@@ -110,8 +155,10 @@ const MovimentacaoForm = () => {
                                         name="tipo_movimentacao" 
                                         value={formData.tipo_movimentacao}
                                         onChange={handleChange}
+                                        // Se quiser bloquear troca de tipo na edição, use disabled={!!id}
                                     >
                                         <option value="SAIDA">Saída (Despesa)</option>
+                                        <option value="ENTRADA">Entrada (Receita)</option>
                                     </Form.Select>
                                 </Form.Group>
                             </Col>
@@ -144,7 +191,7 @@ const MovimentacaoForm = () => {
                                 Cancelar
                             </Button>
                             <Button variant="primary" type="submit">
-                                Salvar Movimentação
+                                {id ? 'Salvar Alterações' : 'Salvar Movimentação'}
                             </Button>
                         </div>
                     </Form>

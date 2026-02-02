@@ -19,18 +19,17 @@ const Dashboard = () => {
       try {
         const [alunosResponse, matriculasResponse, aRenovarResponse] = await Promise.all([
           // Busca total de alunos ativos
-          // Parâmetros: page=0, size=1, search='', status='ATIVO'
           AlunoService.findAll(0, 1, '', 'ATIVO'),
 
           // Busca novas matrículas do mês
           MatriculaService.getNovasNoMes(),
 
-          // 3usca matrículas a renovar (7 dias)
+          // Busca matrículas a renovar (7 dias)
           MatriculaService.getARenovar()
         ]);
 
         setKpis({
-          alunosAtivos: alunosResponse.totalElements || 0, // O backend retorna um Page, usamos o totalElements
+          alunosAtivos: alunosResponse.totalElements || 0, 
           matriculasMes: matriculasResponse || 0,
           aRenovar: aRenovarResponse || 0
         });
@@ -162,7 +161,7 @@ const Dashboard = () => {
             <Card.Body className="d-flex flex-column align-items-center justify-content-center py-4">
               <i className="bi bi-wallet2 fs-1 text-success mb-3"></i>
               <Card.Title>Pagamentos</Card.Title>
-              <Card.Text className="text-muted small">Baixa de mensalidades e caixa.</Card.Text>
+              <Card.Text className="text-muted small">Visualize os pagamentos realizados.</Card.Text>
               <Link to="/financeiro">
                 <Button variant="outline-secondary" size="sm" className="mt-2">Acessar</Button>
               </Link>

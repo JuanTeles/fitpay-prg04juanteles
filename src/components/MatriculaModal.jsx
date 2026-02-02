@@ -156,10 +156,10 @@ const MatriculaModal = ({ show, handleClose, aluno }) => {
                             </Form.Group>
                         </div>
                         
-                        {/* Data Fim (Calculada - Read Only) */}
+                        {/* Data Fim */}
                         <div className="col-md-6">
                             <Form.Group className="mb-3">
-                                <Form.Label>Data de Fim (Calculada)</Form.Label>
+                                <Form.Label>Data de Fim</Form.Label>
                                 <Form.Control 
                                     type="date" 
                                     value={dataFim} 

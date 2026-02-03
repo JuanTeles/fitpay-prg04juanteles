@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Container, Table, Badge, Alert, Form, Card } from 'react-bootstrap';
+import { Container, Table, Badge, Alert, Form, Card, Pagination } from 'react-bootstrap'; // Pagination adicionado
 import PageTitulo from '../../components/global/PageTitulo';
 import EstadoVazio from '../../components/global/EstadoVazio';
 import CarregandoSpinner from '../../components/global/CarregandoSpinner';
@@ -15,17 +15,24 @@ const PagamentoList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [metodoFilter, setMetodoFilter] = useState('');
 
+  // Estados para Paginação
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
   // Função memoizada para evitar warning do ESLint
-  const carregarPagamentos = useCallback(async () => {
+  // Atualizada para receber page (ou usar o estado currentPage)
+  const carregarPagamentos = useCallback(async (page = 0) => {
     try {
       setLoading(true);
+      // Passa a página dinâmica. 
       const data = await PagamentoService.findAll(
-        0,
-        20,
+        page,
+        12,
         searchTerm,
         metodoFilter
       );
       setPagamentos(data.content || []);
+      setTotalPages(data.totalPages); // Atualiza total de páginas
       setError(null);
     } catch (error) {
       setError('Erro ao carregar pagamentos.');
@@ -38,11 +45,29 @@ const PagamentoList = () => {
   useEffect(() => {
     // Debounce para evitar múltiplas chamadas enquanto o usuário digita
     const timer = setTimeout(() => {
-      carregarPagamentos();
+      carregarPagamentos(currentPage);
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [carregarPagamentos]);
+  }, [carregarPagamentos, currentPage]); 
+
+  // LÓGICA DE PAGINAÇÃO (Max 5 botões)
+  const maxButtons = 5;
+  let startPage = Math.max(0, currentPage - 2);
+  let endPage = Math.min(totalPages, currentPage + 3);
+
+  if (totalPages > maxButtons) {
+      if (currentPage <= 2) {
+          startPage = 0;
+          endPage = maxButtons;
+      } else if (currentPage + 2 >= totalPages) {
+          startPage = totalPages - maxButtons;
+          endPage = totalPages;
+      }
+  } else {
+      startPage = 0;
+      endPage = totalPages;
+  }
 
   return (
     <Container className="py-5">
@@ -58,7 +83,10 @@ const PagamentoList = () => {
           {/* FILTRO MÉTODO */}
           <Form.Select
             value={metodoFilter}
-            onChange={(e) => setMetodoFilter(e.target.value)}
+            onChange={(e) => {
+                setMetodoFilter(e.target.value);
+                setCurrentPage(0); // Reseta página ao filtrar
+            }}
             style={{ minWidth: '150px' }}
             className="shadow-sm"
           >
@@ -72,7 +100,10 @@ const PagamentoList = () => {
           <BarraBusca
             placeholder="Pesquisar por nome do aluno..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(0); // Reseta página ao buscar
+            }}
           />
         </div>
       </div>
@@ -138,6 +169,44 @@ const PagamentoList = () => {
             </Table>
           </Card.Body>
         </Card>
+      )}
+
+      {/* Componente de Paginação */}
+      {totalPages > 1 && (
+        <div className="d-flex justify-content-center mt-4">
+            <Pagination>
+                <Pagination.First 
+                    onClick={() => setCurrentPage(0)} 
+                    disabled={currentPage === 0} 
+                />
+                <Pagination.Prev 
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))} 
+                    disabled={currentPage === 0} 
+                />
+                
+                {[...Array(endPage - startPage)].map((_, i) => {
+                    const pageIndex = startPage + i;
+                    return (
+                        <Pagination.Item 
+                            key={pageIndex} 
+                            active={pageIndex === currentPage}
+                            onClick={() => setCurrentPage(pageIndex)}
+                        >
+                            {pageIndex + 1}
+                        </Pagination.Item>
+                    );
+                })}
+                
+                <Pagination.Next 
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1))} 
+                    disabled={currentPage === totalPages - 1} 
+                />
+                <Pagination.Last 
+                    onClick={() => setCurrentPage(totalPages - 1)} 
+                    disabled={currentPage === totalPages - 1} 
+                />
+            </Pagination>
+        </div>
       )}
     </Container>
   );

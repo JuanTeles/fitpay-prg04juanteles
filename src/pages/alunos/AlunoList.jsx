@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Table, Button, Card, Alert, Form } from 'react-bootstrap';
+import { Container, Table, Button, Card, Alert, Form, Pagination } from 'react-bootstrap';
 import ModalConfirmacao from '../../components/ModalConfirmacao';
 import MatriculaModal from '../../components/MatriculaModal'; 
 import HistoricoMatriculasModal from '../../components/HistoricoMatriculasModal';
@@ -20,6 +20,10 @@ const AlunoList = () => {
     // Filtro de Status
     const [statusFilter, setStatusFilter] = useState(''); 
 
+    // Estados de Paginação
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
     const [showModal, setShowModal] = useState(false);
     const [alunoToDelete, setAlunoToDelete] = useState(null);
 
@@ -33,17 +37,18 @@ const AlunoList = () => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            carregarAlunos(searchTerm, statusFilter);
+            carregarAlunos(currentPage, searchTerm, statusFilter);
         }, 500);
         return () => clearTimeout(timer);
-    }, [searchTerm, statusFilter]); 
+    }, [searchTerm, statusFilter, currentPage]); 
 
-    const carregarAlunos = async (termo = '', status = '') => {
+    const carregarAlunos = async (page = 10, termo = '', status = '') => {
         try {
             setLoading(true);
-            // Chama o service enviando paginação, termo de busca E status
-            const dados = await AlunoService.findAll(0, 10, termo, status); 
+            const dados = await AlunoService.findAll(page, 1
+                , termo, status); 
             setAlunos(dados.content || []);
+            setTotalPages(dados.totalPages);
             setError(null);
         } catch (err) {
             setError('Erro ao carregar lista de alunos.');
@@ -61,10 +66,10 @@ const AlunoList = () => {
         try {
             if (!alunoToDelete) return;
             await AlunoService.delete(alunoToDelete);
-            setAlunos(alunos.filter(a => a.id !== alunoToDelete));
+            carregarAlunos(currentPage, searchTerm, statusFilter);
             setShowModal(false); 
             setAlunoToDelete(null);
-            setError(null); // Limpa erros anteriores
+            setError(null); 
         } catch (err) {
             setError('Não foi possível excluir o aluno. Verifique se ele possui matrículas ativas.');
             setShowModal(false);
@@ -83,6 +88,24 @@ const AlunoList = () => {
         setShowModalHistorico(true);
     };
 
+    // Lógica para Paginação com no máximo 5 botões visíveis
+    const maxButtons = 5;
+    let startPage = Math.max(0, currentPage - 2);
+    let endPage = Math.min(totalPages, currentPage + 3);
+
+    if (totalPages > maxButtons) {
+        if (currentPage <= 2) {
+            startPage = 0;
+            endPage = maxButtons;
+        } else if (currentPage + 2 >= totalPages) {
+            startPage = totalPages - maxButtons;
+            endPage = totalPages;
+        }
+    } else {
+        startPage = 0;
+        endPage = totalPages;
+    }
+
     return (
         <Container className="py-5">
             {/* Cabeçalho Responsivo */}
@@ -97,7 +120,10 @@ const AlunoList = () => {
                     {/* FILTRO */}
                     <Form.Select 
                         value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
+                        onChange={(e) => {
+                            setStatusFilter(e.target.value);
+                            setCurrentPage(0);
+                        }}
                         style={{ minWidth: '150px' }}
                         className="shadow-sm"
                     >
@@ -110,7 +136,10 @@ const AlunoList = () => {
                     <BarraBusca
                         placeholder="Pesquisar por nome ou CPF..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setCurrentPage(0);
+                        }}
                     />
 
                     {/* BOTÃO NOVO ALUNO */}
@@ -209,6 +238,45 @@ const AlunoList = () => {
                         </Table>
                     </Card.Body>
                 </Card>
+            )}
+
+            {/* Paginação com lógica de Max 5 botões */}
+            {totalPages > 1 && (
+                <div className="d-flex justify-content-center mt-4">
+                    <Pagination>
+                        <Pagination.First 
+                            onClick={() => setCurrentPage(0)} 
+                            disabled={currentPage === 0} 
+                        />
+                        <Pagination.Prev 
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))} 
+                            disabled={currentPage === 0} 
+                        />
+                        
+                        {/* Renderiza apenas o intervalo calculado (startPage até endPage) */}
+                        {[...Array(endPage - startPage)].map((_, i) => {
+                            const pageIndex = startPage + i;
+                            return (
+                                <Pagination.Item 
+                                    key={pageIndex} 
+                                    active={pageIndex === currentPage}
+                                    onClick={() => setCurrentPage(pageIndex)}
+                                >
+                                    {pageIndex + 1}
+                                </Pagination.Item>
+                            );
+                        })}
+                        
+                        <Pagination.Next 
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1))} 
+                            disabled={currentPage === totalPages - 1} 
+                        />
+                        <Pagination.Last 
+                            onClick={() => setCurrentPage(totalPages - 1)} 
+                            disabled={currentPage === totalPages - 1} 
+                        />
+                    </Pagination>
+                </div>
             )}
 
             <ModalConfirmacao

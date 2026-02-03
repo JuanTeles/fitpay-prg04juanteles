@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Table, Alert } from 'react-bootstrap';
+import { Container, Table, Alert, Pagination } from 'react-bootstrap'; // Adicionado Pagination
 import ModalConfirmacao from '../../components/ModalConfirmacao';
 import PageTitulo from '../../components/global/PageTitulo';
 import BarraBusca from '../../components/global/BarraBusca';
@@ -15,24 +15,29 @@ const EnderecoList = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Estados de Paginação
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
   // Estados para o Modal de Exclusão
   const [showModal, setShowModal] = useState(false);
   const [enderecoToDelete, setEnderecoToDelete] = useState(null);
 
-  // Carrega os dados ao montar o componente 
+  // Carrega os dados ao montar o componente e ao mudar página/busca
   useEffect(() => {
     const timer = setTimeout(() => {
-        fetchEnderecos(searchTerm);
+        fetchEnderecos(currentPage, searchTerm);
     }, 500);
     return () => clearTimeout(timer);
-  }, [searchTerm]);
+  }, [searchTerm, currentPage]);
 
-  const fetchEnderecos = async (termo = '') => {
+  const fetchEnderecos = async (page = 0, termo = '') => {
     try {
       setLoading(true);
-      // O endpoint findAll retorna um Page, pegamos o .content
-      const data = await EnderecoService.findAll(0, 10, termo);
+      // Passa a página dinâmica. Mantive 10 itens por página.
+      const data = await EnderecoService.findAll(page, 10, termo);
       setEnderecos(data.content || []); 
+      setTotalPages(data.totalPages); // Atualiza o total de páginas
       setError(null);
     } catch (err) {
       setError('Erro ao carregar endereços. Tente novamente.');
@@ -55,14 +60,32 @@ const EnderecoList = () => {
         await EnderecoService.delete(enderecoToDelete);
         setShowModal(false);
         setEnderecoToDelete(null);
-        fetchEnderecos(searchTerm); // Recarrega a lista
-        setError(null); // Limpa erros anteriores no sucesso
+        fetchEnderecos(currentPage, searchTerm); // Recarrega na página atual
+        setError(null); 
       } catch (err) {
         setError('Não foi possível excluir o endereço. Ele pode estar vinculado a um aluno.');
         setShowModal(false);
       }
     }
   };
+
+  // --- LÓGICA DE PAGINAÇÃO (Max 5 botões) ---
+  const maxButtons = 5;
+  let startPage = Math.max(0, currentPage - 2);
+  let endPage = Math.min(totalPages, currentPage + 3);
+
+  if (totalPages > maxButtons) {
+      if (currentPage <= 2) {
+          startPage = 0;
+          endPage = maxButtons;
+      } else if (currentPage + 2 >= totalPages) {
+          startPage = totalPages - maxButtons;
+          endPage = totalPages;
+      }
+  } else {
+      startPage = 0;
+      endPage = totalPages;
+  }
 
   return (
     <Container className="py-5">
@@ -77,7 +100,10 @@ const EnderecoList = () => {
             <BarraBusca
                 placeholder="Pesquisar endereço..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setCurrentPage(0); // Reseta página ao buscar
+                }}
             />
             <BotaoCadastro para="/enderecos/novo" texto="Novo Endereço" />
         </div>
@@ -135,6 +161,44 @@ const EnderecoList = () => {
                 </tbody>
             </Table>
             </div>
+        </div>
+      )}
+
+      {/* Componente de Paginação */}
+      {totalPages > 1 && (
+        <div className="d-flex justify-content-center mt-4">
+            <Pagination>
+                <Pagination.First 
+                    onClick={() => setCurrentPage(0)} 
+                    disabled={currentPage === 0} 
+                />
+                <Pagination.Prev 
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))} 
+                    disabled={currentPage === 0} 
+                />
+                
+                {[...Array(endPage - startPage)].map((_, i) => {
+                    const pageIndex = startPage + i;
+                    return (
+                        <Pagination.Item 
+                            key={pageIndex} 
+                            active={pageIndex === currentPage}
+                            onClick={() => setCurrentPage(pageIndex)}
+                        >
+                            {pageIndex + 1}
+                        </Pagination.Item>
+                    );
+                })}
+                
+                <Pagination.Next 
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1))} 
+                    disabled={currentPage === totalPages - 1} 
+                />
+                <Pagination.Last 
+                    onClick={() => setCurrentPage(totalPages - 1)} 
+                    disabled={currentPage === totalPages - 1} 
+                />
+            </Pagination>
         </div>
       )}
 

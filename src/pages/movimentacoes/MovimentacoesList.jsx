@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Table, Badge, Form, Alert } from 'react-bootstrap'; // 1. Adicionado Alert
+import { Container, Table, Badge, Form, Alert, Pagination } from 'react-bootstrap'; // Adicionado Pagination
 import MovimentacaoService from '../../services/MovimentacaoService';
 import PageTitulo from '../../components/global/PageTitulo';
 import CarregandoSpinner from '../../components/global/CarregandoSpinner';
@@ -11,40 +11,41 @@ import ModalConfirmacao from '../../components/ModalConfirmacao';
 const MovimentacaoList = () => {
     const [movimentacoes, setMovimentacoes] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [erro, setErro] = useState(''); // 2. Novo estado para mensagens de erro
+    const [erro, setErro] = useState(''); 
 
     // Estados para os filtros
     const [tipoFilter, setTipoFilter] = useState('');
     const [categoriaFilter, setCategoriaFilter] = useState('');
 
+    // Estados para Paginação
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
     // Estados para exclusão
     const [showModal, setShowModal] = useState(false);
     const [movToDelete, setMovToDelete] = useState(null);
 
-    // Carrega lista inicial
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    // Recarrega lista quando filtros mudam
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
-            fetchData(tipoFilter, categoriaFilter);
+            fetchData(currentPage, tipoFilter, categoriaFilter);
         }, 300);
 
         return () => clearTimeout(delayDebounce);
-    }, [tipoFilter, categoriaFilter]);
+    }, [tipoFilter, categoriaFilter, currentPage]); 
 
     // Função para buscar movimentações
-    const fetchData = async (tipo = '', categoria = '') => {
+    const fetchData = async (page = 0, tipo = '', categoria = '') => {
         try {
             setLoading(true);
-            const data = await MovimentacaoService.findAll(0, 50, tipo, categoria);
-            // Ordenar do mais recente para o mais antigo
+            const data = await MovimentacaoService.findAll(page, 10, tipo, categoria);
+            
+            // Ordenar do mais recente para o mais antigo 
             const ordenadas = (data.content || []).sort(
                 (a, b) => new Date(b.data_hora) - new Date(a.data_hora)
             );
+            
             setMovimentacoes(ordenadas);
+            setTotalPages(data.totalPages); // Atualiza total de páginas
         } catch (error) {
             console.error("Erro ao carregar movimentações");
             setErro('Não foi possível carregar a lista de movimentações.');
@@ -63,18 +64,38 @@ const MovimentacaoList = () => {
     const confirmarExclusao = async () => {
         try {
             if (!movToDelete) return;
-            await MovimentacaoService.delete(movToDelete); // Chama o backend
-            setMovimentacoes(prev => prev.filter(m => m.id !== movToDelete)); // Atualiza lista
+            await MovimentacaoService.delete(movToDelete); 
+            
+            // Recarrega a lista mantendo a página atual
+            fetchData(currentPage, tipoFilter, categoriaFilter);
+            
             setShowModal(false);
             setMovToDelete(null);
-            setErro(''); // 3. Limpa erro em caso de sucesso
+            setErro(''); 
         } catch (err) {
             console.error("Erro ao excluir movimentação");
-            // 4. Feedback visual em vez de console ou alert
             setErro('Erro ao excluir a movimentação. Tente novamente.'); 
             setShowModal(false);
         }
     };
+
+    // LÓGICA DE PAGINAÇÃO (Max 5 botões) 
+    const maxButtons = 5;
+    let startPage = Math.max(0, currentPage - 2);
+    let endPage = Math.min(totalPages, currentPage + 3);
+
+    if (totalPages > maxButtons) {
+        if (currentPage <= 2) {
+            startPage = 0;
+            endPage = maxButtons;
+        } else if (currentPage + 2 >= totalPages) {
+            startPage = totalPages - maxButtons;
+            endPage = totalPages;
+        }
+    } else {
+        startPage = 0;
+        endPage = totalPages;
+    }
 
     if (loading) return <CarregandoSpinner />;
 
@@ -91,7 +112,10 @@ const MovimentacaoList = () => {
                     {/* Filtro de Tipo */}
                     <Form.Select 
                         value={tipoFilter}
-                        onChange={(e) => setTipoFilter(e.target.value)}
+                        onChange={(e) => {
+                            setTipoFilter(e.target.value);
+                            setCurrentPage(0); // Reseta página ao filtrar
+                        }}
                         className="shadow-sm"
                         style={{ minWidth: '150px' }}
                     >
@@ -103,7 +127,10 @@ const MovimentacaoList = () => {
                     {/* Filtro de Categoria */}
                     <Form.Select 
                         value={categoriaFilter}
-                        onChange={(e) => setCategoriaFilter(e.target.value)}
+                        onChange={(e) => {
+                            setCategoriaFilter(e.target.value);
+                            setCurrentPage(0); // Reseta página ao filtrar
+                        }}
                         className="shadow-sm"
                         style={{ minWidth: '180px' }}
                     >
@@ -123,7 +150,7 @@ const MovimentacaoList = () => {
                 </div>
             </div>
 
-            {/* 5. Exibição do Alerta de Erro */}
+            {/* Exibição do Alerta de Erro */}
             {erro && (
                 <Alert variant="danger" onClose={() => setErro('')} dismissible className="mb-4">
                     {erro}
@@ -178,6 +205,44 @@ const MovimentacaoList = () => {
                         ))}
                     </tbody>
                 </Table>
+            )}
+
+            {/* Componente de Paginação */}
+            {totalPages > 1 && (
+                <div className="d-flex justify-content-center mt-4">
+                    <Pagination>
+                        <Pagination.First 
+                            onClick={() => setCurrentPage(0)} 
+                            disabled={currentPage === 0} 
+                        />
+                        <Pagination.Prev 
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))} 
+                            disabled={currentPage === 0} 
+                        />
+                        
+                        {[...Array(endPage - startPage)].map((_, i) => {
+                            const pageIndex = startPage + i;
+                            return (
+                                <Pagination.Item 
+                                    key={pageIndex} 
+                                    active={pageIndex === currentPage}
+                                    onClick={() => setCurrentPage(pageIndex)}
+                                >
+                                    {pageIndex + 1}
+                                </Pagination.Item>
+                            );
+                        })}
+                        
+                        <Pagination.Next 
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1))} 
+                            disabled={currentPage === totalPages - 1} 
+                        />
+                        <Pagination.Last 
+                            onClick={() => setCurrentPage(totalPages - 1)} 
+                            disabled={currentPage === totalPages - 1} 
+                        />
+                    </Pagination>
+                </div>
             )}
 
             {/* Modal de confirmação */}

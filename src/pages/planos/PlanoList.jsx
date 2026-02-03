@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Table, Card, Alert, Badge } from 'react-bootstrap';
+import { Container, Table, Card, Alert, Badge, Pagination } from 'react-bootstrap'; // Pagination adicionado
 import ModalConfirmacao from '../../components/ModalConfirmacao';
 import PageTitulo from '../../components/global/PageTitulo';
 import BotaoCadastro from '../../components/global/BotaoCadastro';
@@ -13,23 +13,27 @@ const PlanoList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Estados para Paginação
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
     // Estados para o Modal de Exclusão
     const [showModal, setShowModal] = useState(false);
     const [planoToDelete, setPlanoToDelete] = useState(null);
 
-    // Busca os dados assim que a tela carrega
+    // Busca os dados assim que a tela carrega ou muda a página
     useEffect(() => {
-        carregarPlanos();
-    }, []);
+        carregarPlanos(currentPage);
+    }, [currentPage]); 
 
-    const carregarPlanos = async () => {
+    // Atualizado para receber a página
+    const carregarPlanos = async (page = 0) => {
         try {
-        setLoading(true);
-        // Chama o Service -> API Java -> Banco de Dados
-        const dados = await PlanoService.findAll(); 
-        // O Spring retorna um objeto Page, a lista real está em 'content'
-        setPlanos(dados.content || []); 
-        setError(null);
+            setLoading(true);
+            const dados = await PlanoService.findAll(page, 10); 
+            setPlanos(dados.content || []); 
+            setTotalPages(dados.totalPages); // Atualiza total de páginas
+            setError(null);
         } catch (err) {
             setError('Erro ao carregar planos. Verifique se o Backend está rodando.');
             console.error(err);
@@ -46,16 +50,34 @@ const PlanoList = () => {
     const confirmarExclusao = async () => {
         try {
             await PlanoService.delete(planoToDelete);
-            setPlanos(planos.filter(p => p.id !== planoToDelete));
-            setShowModal(false); // Fecha o modal
-            setPlanoToDelete(null); // Limpa o ID
-            setError(null); // Limpa erros anteriores no sucesso
+            // Recarrega na página atual
+            carregarPlanos(currentPage);
+            setShowModal(false); 
+            setPlanoToDelete(null); 
+            setError(null); 
         } catch (err) {
-            // PADRONIZAÇÃO: Substituição do alert por feedback visual
             setError('Não foi possível excluir o plano. Ele pode estar vinculado a uma matrícula.');
             setShowModal(false);
         }
     };
+
+    // LÓGICA DE PAGINAÇÃO (Max 5 botões)
+    const maxButtons = 5;
+    let startPage = Math.max(0, currentPage - 2);
+    let endPage = Math.min(totalPages, currentPage + 3);
+
+    if (totalPages > maxButtons) {
+        if (currentPage <= 2) {
+            startPage = 0;
+            endPage = maxButtons;
+        } else if (currentPage + 2 >= totalPages) {
+            startPage = totalPages - maxButtons;
+            endPage = totalPages;
+        }
+    } else {
+        startPage = 0;
+        endPage = totalPages;
+    }
 
     return (
         <Container className="py-5">
@@ -126,6 +148,44 @@ const PlanoList = () => {
                         </Table>
                     </Card.Body>
                 </Card>
+            )}
+
+            {/* Componente de Paginação */}
+            {totalPages > 1 && (
+                <div className="d-flex justify-content-center mt-4">
+                    <Pagination>
+                        <Pagination.First 
+                            onClick={() => setCurrentPage(0)} 
+                            disabled={currentPage === 0} 
+                        />
+                        <Pagination.Prev 
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))} 
+                            disabled={currentPage === 0} 
+                        />
+                        
+                        {[...Array(endPage - startPage)].map((_, i) => {
+                            const pageIndex = startPage + i;
+                            return (
+                                <Pagination.Item 
+                                    key={pageIndex} 
+                                    active={pageIndex === currentPage}
+                                    onClick={() => setCurrentPage(pageIndex)}
+                                >
+                                    {pageIndex + 1}
+                                </Pagination.Item>
+                            );
+                        })}
+                        
+                        <Pagination.Next 
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1))} 
+                            disabled={currentPage === totalPages - 1} 
+                        />
+                        <Pagination.Last 
+                            onClick={() => setCurrentPage(totalPages - 1)} 
+                            disabled={currentPage === totalPages - 1} 
+                        />
+                    </Pagination>
+                </div>
             )}
 
             <ModalConfirmacao

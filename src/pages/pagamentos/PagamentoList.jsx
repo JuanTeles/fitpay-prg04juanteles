@@ -7,6 +7,11 @@ import BarraBusca from '../../components/global/BarraBusca';
 import PagamentoService from '../../services/PagamentoService';
 
 const PagamentoList = () => {
+  
+  useEffect(() => {
+    document.title = "Pagamentos - FitPay"; // Define o título da guia
+  }, []);
+
   const [pagamentos, setPagamentos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

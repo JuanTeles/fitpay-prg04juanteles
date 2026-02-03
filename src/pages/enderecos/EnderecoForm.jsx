@@ -5,6 +5,10 @@ import EnderecoService from '../../services/EnderecoService';
 import EnderecoCampos from '../../components/endereco/EnderecoCampos';
 
 const EnderecoForm = () => {
+  useEffect(() => {
+      document.title = "Formulário Endereço - FitPay"; // Define o título da guia
+  }, []);
+
   const { id } = useParams(); // Pega o ID da rota (se houver)
   const navigate = useNavigate();
 

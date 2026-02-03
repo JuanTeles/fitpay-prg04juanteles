@@ -6,6 +6,11 @@ import MatriculaService from '../services/MatriculaService';
 import '../styles/global.css';
 
 const Dashboard = () => {
+  
+  useEffect(() => {
+    document.title = "Dashboard - FitPay"; // Define o título da guia
+  }, []);
+
   // Estado para armazenar os indicadores
   const [kpis, setKpis] = useState({
     alunosAtivos: 0,

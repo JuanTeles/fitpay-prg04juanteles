@@ -10,6 +10,11 @@ import CarregandoSpinner from '../../components/global/CarregandoSpinner';
 import EnderecoService from '../../services/EnderecoService';
 
 const EnderecoList = () => {
+  
+  useEffect(() => {
+      document.title = "Endereços - FitPay"; // Define o título da guia
+  }, []);
+
   const [enderecos, setEnderecos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

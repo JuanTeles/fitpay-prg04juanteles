@@ -12,6 +12,10 @@ import MatriculaModal from '../../components/matricula/MatriculaModal';
 import HistoricoMatriculasModal from '../../components/matricula/HistoricoMatriculasModal';
 
 const AlunoList = () => {
+    useEffect(() => {
+    document.title = "Alunos - FitPay"; // Define o título da guia
+    }, []);
+
     const [alunos, setAlunos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

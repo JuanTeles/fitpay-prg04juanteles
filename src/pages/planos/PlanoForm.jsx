@@ -4,91 +4,94 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import PlanoService from '../../services/PlanoService';
 
 const PlanoForm = () => {
-    const navigate = useNavigate();
-    const { id } = useParams(); // Identifica se é Edição (tem ID) ou Cadastro (não tem)
-    
-    // Estado inicial do objeto Plano
-    const [plano, setPlano] = useState({
-        nome: '',
-        valor: '',
-        duracaoDias: '',
-        descricao: ''
-    });
+  useEffect(() => {
+    document.title = "Formulário Planos - FitPay"; // Define o título da guia
+  }, []);
 
-    const [error, setError] = useState(null);
-    const [saving, setSaving] = useState(false);
+  const navigate = useNavigate();
+  const { id } = useParams(); // Identifica se é Edição (tem ID) ou Cadastro (não tem)
+  
+  // Estado inicial do objeto Plano
+  const [plano, setPlano] = useState({
+      nome: '',
+      valor: '',
+      duracaoDias: '',
+      descricao: ''
+  });
 
-    // Se tiver ID na URL, busca os dados do plano para editar
-    useEffect(() => {
-        if (id) {
-            carregarPlano(id);
-        }
-    }, [id]);
+  const [error, setError] = useState(null);
+  const [saving, setSaving] = useState(false);
 
-    const carregarPlano = async (planoId) => {
+  // Se tiver ID na URL, busca os dados do plano para editar
+  useEffect(() => {
+      if (id) {
+          carregarPlano(id);
+      }
+  }, [id]);
+
+  const carregarPlano = async (planoId) => {
     try {
-        const dados = await PlanoService.findById(planoId);
-        
-        // Preenche o formulário com os dados que viram da API
-        setPlano({
-            nome: dados.nome,
-            valor: dados.valor,
-            duracaoDias: dados.duracao_dias || dados.duracaoDias, 
-            descricao: dados.descricao || ''
-        });
+      const dados = await PlanoService.findById(planoId);
+      
+      // Preenche o formulário com os dados que viram da API
+      setPlano({
+        nome: dados.nome,
+        valor: dados.valor,
+        duracaoDias: dados.duracao_dias || dados.duracaoDias, 
+        descricao: dados.descricao || ''
+      });
       
     } catch (err) {
-        setError('Erro ao carregar dados para edição.');
-        console.error(err);
+      setError('Erro ao carregar dados para edição.');
+      console.error(err);
     } 
   };
 
-    // Envia os dados para o Backend
-    const handleSubmit = async (e) => {
-        e.preventDefault(); // Não recarrega a página
-        setSaving(true);
-        setError(null);
+  // Envia os dados para o Backend
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Não recarrega a página
+    setSaving(true);
+    setError(null);
 
-    try {
-        // Substitui vírgula por ponto para evitar erro de Locale
-        let valorFormatado = plano.valor.toString().replace(',', '.');
-        // Prepara o objeto convertendo números
-        const payload = {
-            nome: plano.nome,
-            valor: parseFloat(valorFormatado), 
-            duracao_dias: parseInt(plano.duracaoDias),
-            descricao: plano.descricao || '' // Envia string vazia se for null
-        };
+  try {
+    // Substitui vírgula por ponto para evitar erro de Locale
+    let valorFormatado = plano.valor.toString().replace(',', '.');
+    // Prepara o objeto convertendo números
+    const payload = {
+        nome: plano.nome,
+        valor: parseFloat(valorFormatado), 
+        duracao_dias: parseInt(plano.duracaoDias),
+        descricao: plano.descricao || '' // Envia string vazia se for null
+    };
 
-        // SÓ adiciona o ID no objeto se ele realmente existir (Edição).
-        if (id) {
-            payload.id = parseInt(id);
-            await PlanoService.update(payload);
-        } else {
-            await PlanoService.save(payload); 
-        }
+    // SÓ adiciona o ID no objeto se ele realmente existir (Edição).
+    if (id) {
+        payload.id = parseInt(id);
+        await PlanoService.update(payload);
+    } else {
+        await PlanoService.save(payload); 
+    }
 
-        // Volta para a lista (Sucesso, sem alert)
-        navigate('/planos');
-
-    } catch (err) {
-        console.error("Erro detalhado:", err);
-        
-        // CAPTURA INTELIGENTE DE ERRO
-        // Tenta pegar a mensagem específica que o Spring mandou (Validation)
-        let msg = 'Erro ao salvar o plano.';
-        
-        if (err.response) {
-            if (err.response.data && err.response.data.message) {
-                msg = err.response.data.message; 
-            } 
-            // Se for erro de validação de campos (ValidationErrors)
-            else if (err.response.data && Array.isArray(err.response.data.errors)) {
-                msg = err.response.data.errors.map(e => `${e.field}: ${e.defaultMessage}`).join(', ');
-            }
+    // Volta para a lista (Sucesso, sem alert)
+    navigate('/planos');
+  } catch (err) {
+      console.error("Erro detalhado:", err);
+      
+      // CAPTURA INTELIGENTE DE ERRO
+      // Tenta pegar a mensagem específica que o Spring mandou (Validation)
+      let msg = 'Erro ao salvar o plano.';
+      
+      if (err.response) {
+        if (err.response.data && err.response.data.message) {
+          msg = err.response.data.message; 
         } 
-        setError(msg);
-        setSaving(false);
+        // Se for erro de validação de campos (ValidationErrors)
+        else if (err.response.data && Array.isArray(err.response.data.errors)) {
+          msg = err.response.data.errors.map(e => `${e.field}: ${e.defaultMessage}`).join(', ');
+        }
+      } 
+      setError(msg);
+      setSaving(false);
     }
   };
 

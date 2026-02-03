@@ -9,6 +9,11 @@ import BotoesAcao from '../../components/global/BotoesAcao';
 import ModalConfirmacao from '../../components/global/ModalConfirmacao';
 
 const MovimentacaoList = () => {
+    
+    useEffect(() => {
+        document.title = "Movimentações Financeiras - FitPay"; // Define o título da guia
+    }, []);
+
     const [movimentacoes, setMovimentacoes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [erro, setErro] = useState(''); 

@@ -6,6 +6,10 @@ import PageTitulo from '../../components/global/PageTitulo';
 import CarregandoSpinner from '../../components/global/CarregandoSpinner';
 
 const MovimentacaoForm = () => {
+    useEffect(() => {
+        document.title = "Formulário Movimentação Financeira - FitPay"; // Define o título da guia
+    }, []);
+
     const navigate = useNavigate();
     const { id } = useParams(); // Pega o ID da URL (se for edição)
     const [loading, setLoading] = useState(false);

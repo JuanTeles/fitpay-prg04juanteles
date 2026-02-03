@@ -9,6 +9,10 @@ import CarregandoSpinner from '../../components/global/CarregandoSpinner';
 import PlanoService from '../../services/PlanoService';
 
 const PlanoList = () => {
+    useEffect(() => {
+        document.title = "Planos - FitPay"; // Define o título da guia
+    }, []);
+    
     const [planos, setPlanos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

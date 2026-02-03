@@ -5,6 +5,10 @@ import AlunoService from '../../services/AlunoService';
 import EnderecoCampos from '../../components/endereco/EnderecoCampos'; 
 
 const AlunoForm = () => {
+    useEffect(() => {
+        document.title = "Formulário Aluno - FitPay"; // Define o título da guia
+    }, []);
+
     const navigate = useNavigate();
     const { id } = useParams();
 

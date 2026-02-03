@@ -5,8 +5,8 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
-import Header from './components/Header';
-import Footer from './components/Footer';
+import Header from './components/global/Header';
+import Footer from './components/global/Footer';
 
 import Dashboard from './pages/Dashboard';
 import About from './pages/About'; 
@@ -51,7 +51,7 @@ const App = () => {
                     <Route path="/alunos/editar/:id" element={<AlunoForm />} />
 
                     {/* Rotas Pagamentos (Sprint 3) */}
-                    <Route path="/pagamento" element={<PagamentoList />} />
+                    <Route path="/pagamentos" element={<PagamentoList />} />
 
                     {/* Rotas MovimentacaoFinanceira (Sprint 3) */}
                     <Route path="/movimentacoes" element={<MovimentacoesList />} />

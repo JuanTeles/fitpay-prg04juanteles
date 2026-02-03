@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Container, Table, Alert, Pagination } from 'react-bootstrap'; // Adicionado Pagination
-import ModalConfirmacao from '../../components/ModalConfirmacao';
+import ModalConfirmacao from '../../components/global/ModalConfirmacao';
 import PageTitulo from '../../components/global/PageTitulo';
 import BarraBusca from '../../components/global/BarraBusca';
 import BotaoCadastro from '../../components/global/BotaoCadastro';

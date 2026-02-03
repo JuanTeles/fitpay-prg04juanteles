@@ -162,7 +162,7 @@ const Dashboard = () => {
               <i className="bi bi-wallet2 fs-1 text-success mb-3"></i>
               <Card.Title>Pagamentos</Card.Title>
               <Card.Text className="text-muted small">Visualize os pagamentos realizados.</Card.Text>
-              <Link to="/pagamento">
+              <Link to="/pagamentos">
                 <Button variant="outline-secondary" size="sm" className="mt-2">Acessar</Button>
               </Link>
             </Card.Body>

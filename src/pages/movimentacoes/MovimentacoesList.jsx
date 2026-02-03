@@ -6,7 +6,7 @@ import CarregandoSpinner from '../../components/global/CarregandoSpinner';
 import EstadoVazio from '../../components/global/EstadoVazio';
 import BotaoCadastro from '../../components/global/BotaoCadastro';
 import BotoesAcao from '../../components/global/BotoesAcao'; 
-import ModalConfirmacao from '../../components/ModalConfirmacao';
+import ModalConfirmacao from '../../components/global/ModalConfirmacao';
 
 const MovimentacaoList = () => {
     const [movimentacoes, setMovimentacoes] = useState([]);

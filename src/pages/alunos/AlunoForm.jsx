@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Container, Card, Form, Button, Row, Col, Alert } from 'react-bootstrap';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import AlunoService from '../../services/AlunoService';
-import EnderecoCampos from '../../components/EnderecoCampos'; 
+import EnderecoCampos from '../../components/endereco/EnderecoCampos'; 
 
 const AlunoForm = () => {
     const navigate = useNavigate();

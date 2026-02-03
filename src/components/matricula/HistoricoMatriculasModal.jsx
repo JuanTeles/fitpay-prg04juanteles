@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Table, Spinner, Badge, Alert } from 'react-bootstrap';
-import MatriculaService from '../services/MatriculaService';
-import ModalConfirmacao from './ModalConfirmacao';
+import MatriculaService from './../../services/MatriculaService';
+import ModalConfirmacao from '../global/ModalConfirmacao';
 
 const HistoricoMatriculasModal = ({ show, handleClose, aluno }) => {
     const [matriculas, setMatriculas] = useState([]);

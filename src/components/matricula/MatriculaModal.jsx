@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert, Spinner } from 'react-bootstrap';
-import PlanoService from '../services/PlanoService';
-import MatriculaService from '../services/MatriculaService';
+import PlanoService from '../../services/PlanoService';
+import MatriculaService from '../../services/MatriculaService';
 
 const MatriculaModal = ({ show, handleClose, aluno }) => {
     // Estados para armazenar os dados do formulário

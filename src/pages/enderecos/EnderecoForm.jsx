@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Container, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import EnderecoService from '../../services/EnderecoService';
-import EnderecoCampos from '../../components/EnderecoCampos';
+import EnderecoCampos from '../../components/endereco/EnderecoCampos';
 
 const EnderecoForm = () => {
   const { id } = useParams(); // Pega o ID da rota (se houver)

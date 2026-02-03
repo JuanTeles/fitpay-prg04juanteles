@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Navbar, Container, Nav, Offcanvas } from 'react-bootstrap';
-import '../styles/global.css'; 
+import '../../styles/global.css'; 
 
 const Header = () => {
   const expand = 'lg'; // Define em qual tamanho o menu vira hambúrguer
@@ -52,6 +52,11 @@ const Header = () => {
               
               <Nav.Link as={NavLink} to="/movimentacoes" className="text-light">
                 Financeiro
+              </Nav.Link>
+
+              {/* Dentro do Offcanvas.Body, após o link de Financeiro */}
+              <Nav.Link as={NavLink} to="/about" className="text-light">
+                  Sobre
               </Nav.Link>
             </Nav>
             

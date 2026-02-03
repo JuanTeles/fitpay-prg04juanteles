@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Container, Table, Button, Card, Alert, Form, Pagination } from 'react-bootstrap';
-import ModalConfirmacao from '../../components/ModalConfirmacao';
-import MatriculaModal from '../../components/MatriculaModal'; 
-import HistoricoMatriculasModal from '../../components/HistoricoMatriculasModal';
 import PageTitulo from '../../components/global/PageTitulo';
 import BarraBusca from '../../components/global/BarraBusca';
 import BotaoCadastro from '../../components/global/BotaoCadastro';
-import BotõesAcao from '../../components/global/BotoesAcao';
+import BotoesAcao from '../../components/global/BotoesAcao';
 import EstadoVazio from '../../components/global/EstadoVazio';
 import CarregandoSpinner from '../../components/global/CarregandoSpinner';
 import AlunoService from '../../services/AlunoService';
+import ModalConfirmacao from '../../components/global/ModalConfirmacao';
+import MatriculaModal from '../../components/matricula/MatriculaModal';
+import HistoricoMatriculasModal from '../../components/matricula/HistoricoMatriculasModal';
 
 const AlunoList = () => {
     const [alunos, setAlunos] = useState([]);
@@ -45,7 +45,7 @@ const AlunoList = () => {
     const carregarAlunos = async (page = 10, termo = '', status = '') => {
         try {
             setLoading(true);
-            const dados = await AlunoService.findAll(page, 1
+            const dados = await AlunoService.findAll(page, 10
                 , termo, status); 
             setAlunos(dados.content || []);
             setTotalPages(dados.totalPages);
@@ -224,7 +224,7 @@ const AlunoList = () => {
                                                         <i className="bi bi-clock-history fs-5"></i>
                                                     </Button>
 
-                                                    <BotõesAcao 
+                                                    <BotoesAcao 
                                                         id={aluno.id}
                                                         rotaEditar={`/alunos/editar/${aluno.id}`}
                                                         onDelete={handleAbrirConfirmacao}
@@ -288,14 +288,14 @@ const AlunoList = () => {
             />
 
             {/* Modal de Matrícula */}
-            <MatriculaModal 
+            <MatriculaModal
                 show={showModalMatricula}
                 handleClose={() => setShowModalMatricula(false)}
                 aluno={alunoParaMatricula}
             />
 
             {/* Modal de Histórico */}
-            <HistoricoMatriculasModal 
+            <HistoricoMatriculasModal
                 show={showModalHistorico}
                 handleClose={() => setShowModalHistorico(false)}
                 aluno={alunoParaHistorico}

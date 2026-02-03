@@ -1,70 +1,162 @@
-# Getting Started with Create React App
+# 🏋️‍♂️ FitPay - Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> Sistema de Gestão de Academias desenvolvido como parte dos requisitos do curso de Análise e Desenvolvimento de Sistemas.
 
-## Available Scripts
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 📋 Sobre o Projeto
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+O **FitPay** é uma aplicação Single Page Application (SPA) focada na administração eficiente de academias. O sistema permite o controle de alunos, gestão financeira (fluxo de caixa), criação de planos de matrícula e monitoramento de indicadores de desempenho (KPIs) através de um dashboard interativo.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+O projeto foi estruturado utilizando **React.js** com uma arquitetura baseada em serviços para consumo de API REST.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🚀 Funcionalidades Principais
 
-### `npm run build`
+### 📊 Dashboard Administrativo
+- Visualização rápida de KPIs: Alunos Ativos, Matrículas no Mês e Renovações Pendentes.
+- Navegação rápida para os principais módulos do sistema.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 👥 Gestão de Alunos
+- **CRUD Completo:** Cadastro, Listagem, Edição e Exclusão.
+- **Filtros Inteligentes:** Busca por nome/CPF e status (Ativo/Inativo).
+- **Matrícula:** Fluxo dedicado para realizar e renovar matrículas.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 💰 Financeiro
+- **Movimentações:** Registro de entradas e saídas.
+- **Pagamentos:** Histórico visual de pagamentos com status colorido (Pendente, Pago, Atrasado).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 📝 Cadastros Auxiliares
+- **Planos:** Configuração de mensalidades e pacotes.
+- **Endereços:** Gestão de localidades.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🏗️ Arquitetura e Estrutura
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+O projeto segue uma organização modular para facilitar a escalabilidade e manutenção:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```text
+src/
+├── api/                # Configuração do Axios (Base URL e Headers)
+├── components/         # Componentes Reutilizáveis
+│   ├── global/         # Header, Footer, Modais, Spinners
+│   ├── matricula/      # Modais específicos de matrícula
+│   └── ...
+├── pages/              # Telas da aplicação (Views)
+│   ├── alunos/         # Listagem e Formulário de Alunos
+│   ├── dashboard/      # Tela inicial com gráficos/KPIs
+│   ├── financeiro/     # Movimentações e Pagamentos
+│   └── ...
+├── services/           # Camada de Serviço (Lógica de API isolada)
+└── styles/             # Estilos globais e variáveis CSS (:root)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🛠️ Tecnologias Utilizadas
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+O projeto foi construído sobre uma stack moderna e robusta:
 
-### Code Splitting
+* ![React](https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB) **React.js:** Biblioteca principal para interfaces dinâmicas.
+* ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=flat-square&logo=react-router&logoColor=white) **Routing:** Gerenciamento de rotas e navegação SPA.
+* ![Bootstrap](https://img.shields.io/badge/Bootstrap_5-563D7C?style=flat-square&logo=bootstrap&logoColor=white) **UI Framework:** Grid system e componentes responsivos.
+* ![Axios](https://img.shields.io/badge/Axios-HTTP-5A29E4?style=flat-square&logo=axios&logoColor=white) **Client HTTP:** Comunicação assíncrona com a API REST.
+* ![Icons](https://img.shields.io/badge/Bootstrap_Icons-UI-0D6EFD?style=flat-square&logo=bootstrap&logoColor=white) **Iconografia:** Ícones vetoriais leves e semânticos.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 🏗️ Arquitetura do Projeto
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+A estrutura de pastas segue o padrão de **Separação de Interesses (SoC)**, isolando a lógica de negócios da interface visual:
 
-### Making a Progressive Web App
+```text
+src/
+├── 📂 api/             # Configuração centralizada do Axios (Base URL)
+├── 📂 components/      # Componentes visuais
+│   ├── 📂 global/      # Header, Footer, Loaders, Modais (Reutilizáveis)
+│   └── 📂 matricula/   # Componentes específicos de negócio
+├── 📂 pages/           # Views (Telas) da aplicação
+│   ├── 📂 alunos/      # Listagem e Formulários de Alunos
+│   ├── 📂 dashboard/   # Painel de KPIs e Gráficos
+│   └── ...
+├── 📂 services/        # Camada de Serviço (Chamadas à API Backend)
+└── 📂 styles/          # Estilização global e variáveis CSS (:root)
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## 📅 Etapas de Desenvolvimento (Sprints)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+O desenvolvimento foi dividido em fases estratégicas para garantir a entrega contínua de valor. A estrutura de rotas reflete essa evolução:
 
-### Deployment
+### 🏁 Sprint 1: Estrutura & Cadastros Base
+* **Configuração Inicial:** Setup do ambiente React, instalação de dependências (Bootstrap, Axios) e definição do layout base (Header e Footer).
+* **Módulo de Planos:** Funcionalidades de listagem, cadastro e edição de planos da academia.
+* **Módulo de Endereços:** Gerenciamento de localidades.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### 👥 Sprint 2: Gestão de Pessoas (Core)
+* **Módulo de Alunos:** CRUD completo com validações de formulário.
+* **Matrículas:** Implementação da lógica de matrícula (associação Aluno x Plano).
+* **Histórico:** Visualização de matrículas anteriores e status de cada uma.
 
-### `npm run build` fails to minify
+### 📈 Sprint 3: Financeiro & Inteligência
+* **Controle Financeiro:** Listagem de pagamentos e fluxo de caixa (Movimentações).
+* **Dashboard:** Criação da tela inicial com indicadores (KPIs) de alunos ativos, renovações e novas matrículas.
+* **Refinamento de UX:** Melhorias visuais, feedbacks de carregamento e tratamento de erros.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## ⚙️ Como Executar o Projeto
+
+Siga os passos abaixo para rodar a aplicação em seu ambiente local.
+
+### Pré-requisitos
+* **Node.js** (Versão 16 ou superior)
+* **Gerenciador de Pacotes** (NPM ou Yarn)
+* **API Backend** rodando (Padrão: `http://localhost:8080`)
+
+### 1. Clonar o Repositório
+```bash
+git clone [https://github.com/seu-usuario/fitpay-frontend.git](https://github.com/seu-usuario/fitpay-frontend.git)
+cd fitpay-frontend
+```
+### 2. Instalar Dependências
+```bash
+npm install
+# ou
+yarn install
+```
+### 3. Configurar Variáveis de Ambiente
+Crie um arquivo .env na raiz do projeto para definir o endereço da API:
+```bash
+REACT_APP_API_BASE_URL=http://localhost:8080
+```
+### 4. Executar a Aplicação
+```bash
+npm start
+```
+O projeto será aberto automaticamente no navegador em http://localhost:3000.
+
+---
+
+## 🎨 UX/UI e Responsividade
+
+A experiência do usuário foi um pilar central no desenvolvimento, garantindo que o sistema seja intuitivo e acessível em diferentes dispositivos.
+
+### 🚦 Feedback Visual & Semântica
+* **Cores com Significado:** O sistema utiliza uma paleta de cores semântica definida globalmente:
+    * 🟢 **Verde (`--status-success`):** Para status "Ativo", "Pago" ou "Entradas".
+    * 🔴 **Vermelho (`--status-danger`):** Para "Inativo", "Atrasado" ou "Saídas".
+    * 🟡 **Amarelo (`--status-warning`):** Para alertas de "Renovação Próxima".
+* **Estados de Carregamento:** O uso de *Spinners* durante as requisições à API impede que o usuário interaja com uma tela "congelada" ou vazia, informando claramente que os dados estão sendo processados.
+
+---
+
+### Desenvolvido por Juan Teles
